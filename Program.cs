@@ -19,8 +19,8 @@ builder.Services.Configure<MvcOptions>(options =>
 });
 
 // 🗂️ Database
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // deploy
 //"ConnectionStrings": {
 //    "DefaultConnection": "Server=DESKTOP-VGOFGHR;Database=WebDoAn;User Id=WebDoAn;Password=StrongPassword123!;Encrypt=False"
