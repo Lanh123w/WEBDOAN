@@ -212,6 +212,19 @@
         autoScroll();
     });
 </script>
+<script>
+    function reloadUserStats() {
+        fetch('/Home/OnlineStatsPartial')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('userStatsContainer').innerHTML = html;
+            });
+    }
+
+    reloadUserStats(); 
+    setInterval(reloadUserStats, 1 * 60 * 1000); 
+</script>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
