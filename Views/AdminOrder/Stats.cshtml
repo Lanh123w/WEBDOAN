@@ -1,12 +1,25 @@
-﻿@model dynamic
+@model dynamic
 @{
-    ViewData["Title"] = "Thống kê người dùng";
+    ViewData["Title"] = "Thống kê hệ thống";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>📊 Thống kê người dùng</h2>
 
-<ul class="list-group">
+<h2>📊 Thống kê người dùng</h2>
+<ul class="list-group mb-4">
     <li class="list-group-item">Tổng số người dùng: <strong>@Model.TotalUsers</strong></li>
     <li class="list-group-item">Đang bị khoá: <strong>@Model.LockedUsers</strong></li>
     <li class="list-group-item">Số Admin: <strong>@Model.Admins</strong></li>
+</ul>
+
+<h2>📦 Thống kê đơn hàng</h2>
+<ul class="list-group mb-4">
+    <li class="list-group-item">Đơn hôm nay: <strong>@Model.TotalOrdersToday</strong></li>
+    <li class="list-group-item">Đơn tuần này: <strong>@Model.TotalOrdersWeek</strong></li>
+    <li class="list-group-item">Đơn tháng này: <strong>@Model.TotalOrdersMonth</strong></li>
+</ul>
+
+<h2>💰 Doanh thu</h2>
+<ul class="list-group">
+    <li class="list-group-item">Doanh thu hôm nay: <strong>@Model.RevenueToday.ToString("N0") đ</strong></li>
+    <li class="list-group-item">Doanh thu tháng này: <strong>@Model.RevenueMonth.ToString("N0") đ</strong></li>
 </ul>
