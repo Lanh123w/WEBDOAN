@@ -189,7 +189,31 @@ public class AdminOrderController : Controller
         .Where(d => d.Order.OrderDate >= monthStart)
         .Sum(d => d.Quantity * d.UnitPrice);
 
+        // 🔥 Món bán chạy nhất (Top 5)
+    var topFoods = _context.OrderDetails
+        .GroupBy(d => d.FoodItem.Name)
+        .Select(g => new
+        {
+            Food = g.Key,
+            Quantity = g.Sum(x => x.Quantity)
+        })
+        .OrderByDescending(x => x.Quantity)
+        .Take(5)
+        .ToList();
+
     
+    var topUsers = _context.Orders
+        .GroupBy(o => o.CustomerName)
+        .Select(g => new
+        {
+            User = g.Key,
+            Orders = g.Count()
+        })
+        .OrderByDescending(x => x.Orders)
+        .Take(5)
+        .ToList();
+
+   
     var stats = new
     {
         TotalUsers = totalUsers,
@@ -199,7 +223,9 @@ public class AdminOrderController : Controller
         TotalOrdersWeek = totalWeek,
         TotalOrdersMonth = totalMonth,
         RevenueToday = revenueToday,
-        RevenueMonth = revenueMonth
+        RevenueMonth = revenueMonth,
+        TopFoods = topFoods,
+        TopUsers = topUsers
     };
 
     return View(stats);
