@@ -156,32 +156,53 @@ public class AdminOrderController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // 📊 Thống kê người dùng
     public async Task<IActionResult> Stats()
+{
+  
+    var users = _userManager.Users.ToList();
+    var totalUsers = users.Count;
+    var lockedUsers = users.Count(u => u.LockoutEnd != null && u.LockoutEnd > DateTimeOffset.UtcNow);
+
+    int admins = 0;
+    foreach (var user in users)
     {
-        var users = _userManager.Users.ToList(); // lấy toàn bộ user
-
-        var totalUsers = users.Count;
-        var lockedUsers = users.Count(u => u.LockoutEnd != null && u.LockoutEnd > DateTimeOffset.UtcNow);
-
-        int admins = 0;
-        foreach (var user in users)
+        if (await _userManager.IsInRoleAsync(user, "Admin"))
         {
-            if (await _userManager.IsInRoleAsync(user, "Admin"))
-            {
-                admins++;
-            }
+            admins++;
         }
-
-        var stats = new
-        {
-            TotalUsers = totalUsers,
-            LockedUsers = lockedUsers,
-            Admins = admins
-        };
-
-        return View(stats);
     }
 
+    
+    var today = DateTime.Today;
+    var weekStart = today.AddDays(-(int)today.DayOfWeek);
+    var monthStart = new DateTime(today.Year, today.Month, 1);
+
+    var totalToday = _context.Orders.Count(o => o.OrderDate.Date == today);
+    var totalWeek = _context.Orders.Count(o => o.OrderDate >= weekStart);
+    var totalMonth = _context.Orders.Count(o => o.OrderDate >= monthStart);
+
+    var revenueToday = _context.OrderDetails
+        .Where(d => d.Order.OrderDate.Date == today)
+        .Sum(d => d.Quantity * d.UnitPrice);
+
+    var revenueMonth = _context.OrderDetails
+        .Where(d => d.Order.OrderDate >= monthStart)
+        .Sum(d => d.Quantity * d.UnitPrice);
+
+    
+    var stats = new
+    {
+        TotalUsers = totalUsers,
+        LockedUsers = lockedUsers,
+        Admins = admins,
+        TotalOrdersToday = totalToday,
+        TotalOrdersWeek = totalWeek,
+        TotalOrdersMonth = totalMonth,
+        RevenueToday = revenueToday,
+        RevenueMonth = revenueMonth
+    };
+
+    return View(stats);
+}
 }
 
