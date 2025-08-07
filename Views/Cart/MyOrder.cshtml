@@ -1,0 +1,195 @@
+﻿@model IEnumerable<WebApplication3.Models.Order>
+
+@{
+    ViewData["Title"] = "Đơn hàng của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #121212;
+        color: #00ffe7;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .section-title {
+        color: #00ffcc;
+        text-shadow: 0 0 8px #00ffcc;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .table {
+        background-color: #1a1a1a;
+        border: 2px solid #00ffcc;
+        box-shadow: 0 0 10px #00ffcc;
+        color: #ffffff;
+    }
+
+        .table th {
+            background-color: #003333;
+            color: #00ffcc;
+            text-shadow: 0 0 3px #00ffcc;
+        }
+
+        .table td {
+            background-color: #002222;
+            color: #ffffff;
+            border: 1px solid #00ffcc;
+        }
+
+    .btn-outline-primary {
+        border-color: #00ccff;
+        color: #00ccff;
+        font-weight: bold;
+        box-shadow: 0 0 5px #00ccff;
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #00ccff;
+            color: #000;
+            box-shadow: 0 0 10px #00ccff;
+            transform: scale(1.05);
+        }
+
+    p {
+        font-size: 18px;
+        color: #ffffff;
+        text-align: center;
+        text-shadow: 0 0 3px #00ffe7;
+    }
+    .btn-outline-danger {
+        border-color: #ff4d4d;
+        color: #ff4d4d;
+        font-weight: bold;
+        box-shadow: 0 0 5px #ff4d4d;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #ff4d4d;
+        color: #000;
+        box-shadow: 0 0 10px #ff4d4d;
+        transform: scale(1.05);
+    }
+
+    .alert {
+        padding: 10px;
+        background-color: #003333;
+        color: #00ffcc;
+        border: 1px solid #00ffcc;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 0 5px #00ffcc;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="section-title">📄 Danh sách đơn hàng</h2>
+
+    @if (TempData["CancelMessage"] != null)
+    {
+        <div class="alert">
+            @TempData["CancelMessage"]
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <p>😢 Bạn chưa có đơn hàng nào.</p>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Ngày đặt</th>
+                    <th>Khách hàng</th>
+                    <th>Tiền ban đầu</th>
+                    <th>Mã giảm giá</th>
+                    <th>Giảm giá</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@order.CustomerName</td>
+                        <td>@order.OriginalAmount VND</td>
+                        <td>@(order.DiscountAmount > 0 ? order.DiscountCode : "0")</td>
+                        <td>-@order.DiscountAmount VND</td>
+                        <td>@order.TotalAmount VND</td>
+                        <td>@order.Status</td>
+                        <td>
+                            <a asp-action="OrderDetail" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary">🔍 Xem</a>
+
+                            <!-- Nút hủy đơn -->
+                            @if (order.Status == "Đang xử lý")
+                            {
+                                <form asp-action="UpdateOrderStatus" method="post">
+                                    <input type="hidden" name="id" value="@order.Id" />
+                                    <input type="hidden" name="actionType" value="cancel" />
+                                    <button type="submit" class="btn btn-danger">Hủy đơn</button>
+                                </form>
+                            }
+
+                            <!-- Nút xác nhận đã nhận -->
+                            @if (order.Status == "Đã giao hàng")
+                            {
+                                <form asp-action="UpdateOrderStatus" method="post">
+                                    <input type="hidden" name="id" value="@order.Id" />
+                                    <input type="hidden" name="actionType" value="confirm" />
+                                    <button type="submit" class="btn btn-success">Xác nhận đã nhận</button>
+                                </form>
+                            }
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    @if (TempData["CancelMessage"] != null)
+    {
+        <div id="toast" class="toast-message">
+            @TempData["CancelMessage"]
+        </div>
+
+        <script>
+            const toast = document.getElementById("toast");
+            if (toast) {
+                toast.style.display = "block";
+                setTimeout(() => {
+                    toast.style.opacity = "0";
+                    setTimeout(() => toast.remove(), 1000);
+                }, 3000);
+            }
+        </script>
+
+        <style>
+            .toast-message {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #003333;
+                color: #00ffcc;
+                padding: 12px 20px;
+                border: 2px solid #00ffcc;
+                border-radius: 8px;
+                box-shadow: 0 0 10px #00ffcc;
+                z-index: 9999;
+                font-weight: bold;
+                opacity: 1;
+                transition: opacity 1s ease;
+            }
+        </style>
+    }
+
+</div>

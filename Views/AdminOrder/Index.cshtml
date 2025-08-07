@@ -1,0 +1,79 @@
+﻿@model List<WEBDOAN.Models.AdminOrderViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (TempData["ToastMessage"] != null)
+{
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+        <div class="toast show bg-success text-white" role="alert">
+            <div class="toast-body">
+                @TempData["ToastMessage"]
+            </div>
+        </div>
+    </div>
+}
+
+<form method="get" asp-action="Index" class="mb-4 d-flex align-items-center">
+    <label class="me-2">Lọc theo trạng thái:</label>
+    <select name="statusFilter" class="form-select me-2" style="width: 200px;">
+        <option value="">-- Tất cả --</option>
+        <option value="Chờ xác nhận" selected="@("Chờ xác nhận" == ViewBag.CurrentFilter)">Chờ xác nhận</option>
+        <option value="Đang chuẩn bị" selected="@("Đang chuẩn bị" == ViewBag.CurrentFilter)">Đang chuẩn bị</option>
+        <option value="Đang giao" selected="@("Đang giao" == ViewBag.CurrentFilter)">Đang giao</option>
+        <option value="Đã giao hàng" selected="@("Đã giao hàng" == ViewBag.CurrentFilter)">Đã giao hàng</option>
+        <option value="Đã hủy" selected="@("Đã hủy" == ViewBag.CurrentFilter)">Đã hủy</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Lọc</button>
+</form>
+
+<h2 class="mb-4">📦 Danh sách đơn hàng</h2>
+
+@foreach (var order in Model)
+{
+    <div class="card mb-3 shadow-sm">
+        <div class="card-header bg-dark text-white">
+            🧾 Đơn hàng #@order.Id — @(order.CustomerName ?? "Không rõ")
+            <span class="float-end">📅 @(order.OrderDate.ToString("dd/MM/yyyy HH:mm"))</span>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush mb-3">
+                @if (order.OrderDetails != null && order.OrderDetails.Any())
+                {
+                    @foreach (var detail in order.OrderDetails)
+                    {
+                        <li class="list-group-item">
+                            🍽 @(detail.FoodItem?.Name ?? "Món không xác định")
+                            — SL: @detail.Quantity
+                            — Giá: @detail.UnitPrice VND
+                            — Tổng: @(detail.Quantity* detail.UnitPrice) VND
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item text-muted">Không có món ăn nào trong đơn hàng này.</li>
+                }
+            </ul>
+
+            <p><strong>💰 Tổng tiền các món:</strong> @order.ItemTotal VND</p>
+            <p><strong>🧾 Tổng thanh toán (đã áp dụng giảm giá):</strong> @order.TotalAmount VND</p>
+            <p><strong>🎟 Mã giảm giá:</strong> @order.DiscountCode</p>
+            <p><strong>🚚 Trạng thái:</strong> @order.Status</p>
+
+            <form asp-action="UpdateStatus" method="post" class="d-flex align-items-center mt-2">
+                <input type="hidden" name="id" value="@order.Id" />
+                <select name="status" class="form-select me-2" style="width: 200px;">
+                    <option value="Chờ xác nhận" selected="@("Chờ xác nhận" == order.Status)">Chờ xác nhận</option>
+                    <option value="Đang chuẩn bị" selected="@("Đang chuẩn bị" == order.Status)">Đang chuẩn bị</option>
+                    <option value="Đang giao" selected="@("Đang giao" == order.Status)">Đang giao</option>
+                    <option value="Đã giao hàng" selected="@("Đã giao hàng" == order.Status)">Đã giao hàng</option>
+                    <option value="Đã hủy" selected="@("Đã hủy" == order.Status)">Đã hủy</option>
+                </select>
+                <button type="submit" class="btn btn-warning">Cập nhật</button>
+            </form>
+        </div>
+    </div>
+}

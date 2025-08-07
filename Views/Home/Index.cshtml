@@ -1,0 +1,259 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    ViewData["Title"] = "Trang chủ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userName = SignInManager.IsSignedIn(User) ? UserManager.GetUserName(User) : null;
+    var suggestedItem = ViewData["SuggestedItem"] as WebApplication3.Models.FoodItem;
+    var topFoodItems = ViewData["TopFoodItems"] as List<WebApplication3.Models.FoodItem>;
+}
+
+<div class="container mt-5">
+    <!-- 🌟 Banner chào mừng -->
+    <div class="text-center mb-5">
+        <a class="navbar-brand glitch-title" data-text="Đặt Là Có Ăn là Ghiền" asp-controller="Home" asp-action="Index">
+            Đặt Là Có Ăn là Ghiền
+        </a>
+
+
+        <p class="lead text-light">Thế giới ẩm thực trong tầm tay bạn. Đặt là có ăn, ăn là ghiền!</p>
+    </div>
+
+    <!-- 👤 Người dùng -->
+    @if (userName != null)
+    {
+        <audio id="welcome-audio" src="~/audio/welcome.mp3" preload="auto"></audio>
+        <script>
+            window.onload = function () {
+                const audio = document.getElementById("welcome-audio");
+                if (audio) audio.play();
+            };
+        </script>
+
+        <div class="alert alert-success text-center">
+            👋 Xin chào, <strong>@userName</strong>! Rất vui được phục vụ bạn.
+        </div>
+
+        <div class="d-flex justify-content-center flex-wrap gap-3 mb-5">
+            <a class="btn btn-primary btn-lg" asp-controller="FoodItems" asp-action="Categories">🍱 Xem món ăn</a>
+            <a class="btn btn-success btn-lg" asp-controller="Cart" asp-action="Index">🛒 Giỏ hàng của bạn</a>
+            <a class="btn btn-warning btn-lg" asp-controller="Cart" asp-action="MyOrder">📦 Đơn hàng đã đặt</a>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            Bạn chưa đăng nhập. Hãy đăng nhập để đặt món và theo dõi đơn hàng nhé!
+        </div>
+
+        <div class="d-flex justify-content-center gap-3 mb-5">
+            <a class="btn btn-outline-primary btn-lg" asp-controller="Account" asp-action="Login">🔐 Đăng nhập</a>
+            <a class="btn btn-outline-secondary btn-lg" asp-controller="Account" asp-action="Register">📝 Đăng ký</a>
+        </div>
+    }
+
+    <!-- 🔥 Gợi ý hôm nay & Món nổi bật -->
+    <div class="row mb-5">
+        <!-- 🌟 Gợi ý hôm nay -->
+        <div class="col-md-6">
+            @if (suggestedItem != null)
+            {
+                <div class="cosmic-card h-100 p-4 text-center d-flex flex-column justify-content-center align-items-center">
+                    <h5 class="mb-3">🌟 Gợi ý hôm nay</h5>
+                    <strong class="fs-5">@suggestedItem.Name</strong>
+                    <p class="mt-2">@suggestedItem.Description</p>
+                    @if (!string.IsNullOrEmpty(suggestedItem.ImageUrl))
+                    {
+                        <img src="@suggestedItem.ImageUrl" alt="@suggestedItem.Name"
+                             class="img-fluid rounded shadow mt-3"
+                             style="max-height: 200px; transition: transform 0.3s;"
+                             onmouseover="this.style.transform='scale(1.05)'"
+                             onmouseout="this.style.transform='scale(1)'" />
+                    }
+                    <a asp-controller="FoodItems" asp-action="ItemsByCategory" asp-route-id="@suggestedItem.Id"
+                       class="btn btn-sm btn-outline-light mt-3">👉 Xem chi tiết</a>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-secondary text-center h-100 d-flex align-items-center justify-content-center">
+                    Không có món ăn nào để gợi ý hôm nay.
+                </div>
+            }
+        </div>
+
+        <!-- 🎠 Món ăn nổi bật -->
+        <div class="col-md-6">
+            @if (topFoodItems != null && topFoodItems.Any())
+            {
+                <div class="cosmic-card h-100 p-4 text-center text-light">
+                    <h5 class="mb-3">🔥 Món ăn nổi bật</h5>
+
+                    <div id="featuredCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+                        <div class="carousel-inner">
+                            @for (int i = 0; i < topFoodItems.Count; i++)
+                            {
+                                var item = topFoodItems[i];
+                                <div class="carousel-item @(i == 0 ? "active" : "") text-center">
+                                    <h4>@item.Name</h4>
+                                    <p>@item.Description</p>
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" alt="@item.Name"
+                                             class="img-fluid rounded mt-2"
+                                             style="max-height: 200px;" />
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#featuredCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-secondary text-center h-100 d-flex align-items-center justify-content-center">
+                    Không có món ăn nổi bật nào để hiển thị.
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <!-- 🍽 Gợi ý danh mục -->
+    <div class="row text-center mb-5">
+        <div class="col-md-4 mb-3">
+            <div class="card cosmic-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">🍜 Món phụ</h5>
+                    <p class="card-text">Bánh khọt, bánh cuốn, bánh bèo, ... các loại bánh truyền thống!</p>
+                    <a asp-controller="FoodItems" asp-action="ItemsByCategory" asp-route-id="2" class="btn btn-outline-light">Khám phá</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card cosmic-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">🍗 Món chính</h5>
+                    <p class="card-text">Cơm,phở, bún bò thơm ngon hấp dẫn!</p>
+                    <a asp-controller="FoodItems" asp-action="ItemsByCategory" asp-route-id="1" class="btn btn-outline-light">Khám phá</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card cosmic-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">🍰 Tráng miệng</h5>
+                    <p class="card-text">Chè, bánh flan, kem tươi... ngọt ngào mát lạnh!</p>
+                    <a asp-controller="FoodItems" asp-action="ItemsByCategory" asp-route-id="4" class="btn btn-outline-light">Khám phá</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔧 Thông tin ứng dụng -->
+    <div class="text-center text-light mt-5">
+        <hr />
+        <p>
+            Ứng dụng được xây dựng bằng <strong>ASP.NET Core MVC</strong> ❤️<br />
+            Giao diện cosmic độc đáo, trải nghiệm mượt mà!
+        </p>
+    </div>
+</div>
+@if (ViewBag.TotalUsers != null && ViewBag.OnlineCount != null)
+{
+    <div class="online-user-stats text-end me-3">
+        👥 Tổng đăng ký: @ViewBag.TotalUsers |
+        🟢 Đang online: @ViewBag.OnlineCount
+
+    </div>
+}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const scrollContainer = document.querySelector('.nav-scroll-container');
+        let scrollSpeed = 0;
+        let isHovering = false;
+
+        scrollContainer.addEventListener('mouseenter', () => {
+            isHovering = true;
+        });
+
+        scrollContainer.addEventListener('mouseleave', () => {
+            isHovering = false;
+            scrollSpeed = 0;
+        });
+
+        scrollContainer.addEventListener('mousemove', (e) => {
+            const rect = scrollContainer.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const center = rect.width / 2;
+
+            scrollSpeed = (mouseX - center) * 2 * Math.abs(mouseX - center) / center;
+            scrollSpeed = Math.max(Math.min(scrollSpeed, 50), -50);
+        });
+
+        function autoScroll() {
+            if (isHovering && scrollSpeed !== 0) {
+                scrollContainer.scrollLeft += scrollSpeed;
+            }
+            requestAnimationFrame(autoScroll);
+        }
+
+        autoScroll();
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const myCarousel = document.querySelector('#featuredCarousel');
+        if (myCarousel) {
+            new bootstrap.Carousel(myCarousel, {
+                interval: 3000,
+                ride: 'carousel',
+                pause: 'hover'
+            });
+        }
+    });
+</script>
+
+
+
+<!-- 🎨 CSS bổ sung -->
+<style>
+    body {
+        background: radial-gradient(circle at top, #1a1a2e, #0f3460);
+        background-size: cover;
+        color: #fff;
+    }
+
+    .cosmic-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: #fff;
+        transition: transform 0.3s ease;
+    }
+
+        .cosmic-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+
+    .glitch-title {
+        font-family: 'Orbitron', sans-serif;
+        color: #fff;
+        text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+        animation: pulseGlow 3s infinite;
+    }
+

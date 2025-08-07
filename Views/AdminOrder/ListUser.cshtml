@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+@{
+    ViewData["Title"] = "Danh sách người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>📋 Danh sách người dùng</h2>
+
+<table class="table table-bordered" table-hover" style="background-color: #fff;">
+    <thead style="background-color: #cce5ff; color: #004085;">
+        <tr>
+            <th>Email</th>
+            <th>Tên đăng nhập</th>
+            <th>Khoá</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr style ="background-color: #fefefe;">
+                <td>@user.Email</td>
+                <td>@user.UserName</td>
+                <td>
+                    @(user.LockoutEnd != null && user.LockoutEnd > DateTimeOffset.UtcNow ? "🔒 Đang bị khoá" : "🔓 Mở")
+                </td>
+                <td class="d-flex justify-content-between align-items-center mt-4 p-3 rounded" style="background-color: #e2f0d9;">
+                    <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info btn-sm">Chi tiết</a>
+                    <form asp-action="Delete" asp-route-id="@user.Id" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-danger btn-sm">Xoá</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,43 @@
+﻿@model List<CartItem>
+
+@{
+    ViewData["Title"] = "Thanh toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    decimal total = Model.Sum(item => item.Quantity * item.FoodItem.Price);
+}
+
+<div class="container mt-5">
+    <h2 class="section-title">💳 Xác nhận thanh toán</h2>
+
+    <table class="table table-bordered table-hover" style="background-color: #fff;">
+        <thead style="background-color: #f8d7da; color: #721c24;">
+            <tr>
+                <th>Món ăn</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="background-color: #fff3cd;">
+                    <td><strong>@item.FoodItem.Name</strong></td>
+                    <td>@item.Quantity</td>
+                    <td>@item.FoodItem.Price ₫</td>
+                    <td>@(item.Quantity* item.FoodItem.Price). ₫</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p class="mt-3" style="font-size: 18px;">
+        <strong>Tổng cộng:</strong> <span style="color: #d63384;">@total ₫</span>
+    </p>
+
+
+    <form asp-action="DatHang" method="post">
+        <button type="submit" class="btn btn-primary">✅ Xác nhận đặt hàng</button>
+        <a asp-action="Index" class="btn btn-secondary ml-2">🔙 Quay lại giỏ hàng</a>
+    </form>
+</div>

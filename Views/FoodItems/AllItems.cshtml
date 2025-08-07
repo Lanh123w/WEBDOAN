@@ -1,0 +1,56 @@
+﻿@model List<WebApplication3.Models.FoodItem>
+@{
+    ViewData["Title"] = "Tất cả món ăn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+<h2 class="section-title">🍽 Tất cả món ăn</h2>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 food-card">
+                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" />
+                <div class="card-body text-center">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text">@item.Description</p>
+                    <p class="card-text text-danger fw-bold">@item.Price ₫</p>
+                    <form method="post" asp-controller="Cart" asp-action="AddToCart" onsubmit="playTing()">
+                        <input type="hidden" name="foodItemId" value="@item.Id" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button type="submit" class="btn btn-success">Thêm vào giỏ hàng</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<style>
+    .food-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .food-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
+    .card-img-top {
+        object-fit: cover;
+        height: 200px;
+    }
+
+    .btn-success {
+        background-color: #198754;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-success:hover {
+            background-color: #157347;
+        }
+</style>

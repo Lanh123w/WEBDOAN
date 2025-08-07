@@ -1,0 +1,63 @@
+﻿@model List<CartItem>
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    decimal total = Model.Sum(item => item.Quantity * item.FoodItem.Price);
+}
+
+<div class="container mt-5">
+    <h2 class="section-title text-primary">🛒 Giỏ hàng - Đặt Là Có Ăn Là Ghiền</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Giỏ hàng của bạn đang trống.</div>
+    }
+    else
+    {
+        <form asp-action="UpdateCart" method="post">
+            <table class="table table-bordered table-hover" style="background-color: #fff;">
+                <thead style="background-color: #cce5ff; color: #004085;">
+                    <tr>
+                        <th>Món ăn</th>
+                        <th>Đơn giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr style="background-color: #fefefe;">
+                            <td><strong>@Model[i].FoodItem.Name</strong></td>
+                            <td>@Model[i].FoodItem.Price ₫</td>
+                            <td>
+                                <input type="number" name="CartItems[@i].Quantity" value="@Model[i].Quantity" min="1" class="form-control" />
+                                <input type="hidden" name="CartItems[@i].FoodItemId" value="@Model[i].FoodItem.Id" />
+                            </td>
+                            <td>@(Model[i].Quantity * Model[i].FoodItem.Price)₫</td>
+                            <td>
+                                <form asp-action="RemoveFormCart" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@Model[i].Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc muốn xóa món này khỏi giỏ hàng?');">
+                                        🗑️ Xóa
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between align-items-center mt-4 p-3 rounded" style="background-color: #e2f0d9;">
+                <button type="submit" class="btn btn-warning">🔄 Cập nhật giỏ hàng</button>
+
+                <div>
+                    <strong style="font-size: 18px;">Tổng cộng:</strong>
+                    <span style="color: #d63384; font-weight: bold; font-size: 18px;">@total ₫</span>
+                    <a asp-action="ThanhToan" class="btn btn-success ml-3">💳 Thanh toán</a>
+                </div>
+            </div>
+        </form>
+    }
+</div>

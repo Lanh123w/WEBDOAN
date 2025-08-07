@@ -1,0 +1,98 @@
+﻿@model List<WEBDOAN.Models.DiscountCode>
+
+@{
+    ViewData["Title"] = "Quản lý mã giảm giá";
+}
+
+<h2 class="section-title">Thêm mã giảm giá</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form asp-action="DiscountCodes" method="post">
+    <div class="form-group">
+        <label>Mã giảm giá</label>
+        <input name="Code" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label>Số tiền giảm</label>
+        <input name="Amount" type="number" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label>Ngày hết hạn</label>
+        <input name="ExpiryDate" type="date" class="form-control" />
+    </div>
+    <div class="form-check">
+        <input name="NoExpiry" type="checkbox" class="form-check-input" />
+        <label class="form-check-label">Không có ngày hết hạn</label>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Thêm mã</button>
+</form>
+
+<hr />
+
+<h3 class="section-title mt-4">📋 Danh sách mã giảm giá</h3>
+<table class="table table-bordered table-discount">
+    <thead>
+        <tr>
+            <th>Mã</th>
+            <th>Số tiền giảm</th>
+            <th>Ngày hết hạn</th>
+            <th>Trạng thái</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var code in Model)
+        {
+            <tr>
+                <td><strong>@code.Code</strong></td>
+                <td>@code.Amount.ToString("N0") đ</td>
+                <td>@(code.ExpiryDate?.ToString("dd/MM/yyyy") ?? "Không có")</td>
+                <td class="@(code.IsActive ? "status-active" : "status-inactive")">
+                    @(code.IsActive ? "✅ Đang hoạt động" : "❌ Ngừng")
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<style>
+    .table-discount {
+        border: 2px solid #007bff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+        .table-discount th {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+        }
+
+        .table-discount td {
+            background-color: #f9f9f9;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table-discount tr:hover {
+            background-color: #e6f0ff;
+            transition: 0.3s;
+        }
+
+    .status-active {
+        color: green;
+        font-weight: bold;
+    }
+
+    .status-inactive {
+        color: red;
+        font-weight: bold;
+    }
+</style>

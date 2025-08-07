@@ -1,0 +1,12 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Thống kê người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>📊 Thống kê người dùng</h2>
+
+<ul class="list-group">
+    <li class="list-group-item">Tổng số người dùng: <strong>@Model.TotalUsers</strong></li>
+    <li class="list-group-item">Đang bị khoá: <strong>@Model.LockedUsers</strong></li>
+    <li class="list-group-item">Số Admin: <strong>@Model.Admins</strong></li>
+</ul>

@@ -1,0 +1,15 @@
+﻿@model WebApplication3.Models.FoodItem
+
+@{
+    ViewData["Title"] = "Xóa món ăn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Bạn có chắc muốn xóa món "@Model.Name"?</h3>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

@@ -1,0 +1,101 @@
+﻿@model WebApplication3.Models.Order
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .order-detail {
+        background-color: #1a1a1a;
+        border: 2px solid #00ffcc;
+        box-shadow: 0 0 10px #00ffcc;
+        padding: 20px;
+        border-radius: 10px;
+        color: #ffffff;
+    }
+
+        .order-detail h2 {
+            color: #00ffcc;
+            text-shadow: 0 0 5px #00ffcc;
+        }
+
+        .order-detail table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+        .order-detail th, .order-detail td {
+            border: 1px solid #00ffcc;
+            padding: 8px;
+            background-color: #002222;
+            color: #fff;
+        }
+
+        .order-detail th {
+            background-color: #003333;
+            color: #00ffcc;
+        }
+
+    .summary-row {
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .summary-label {
+        color: #00ffff;
+    }
+
+    .summary-value {
+        color: #ffcc00;
+    }
+</style>
+
+<div class="container mt-5 order-detail">
+    <h2>🧾 Chi tiết đơn hàng #@Model.Id</h2>
+    <p><strong>Khách hàng:</strong> @Model.CustomerName</p>
+    <p><strong>Địa chỉ:</strong> @Model.Address</p>
+    <p><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+    <p><strong>Trạng thái:</strong> @Model.Status</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Món ăn</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderDetails)
+            {
+                <tr>
+                    <td>@item.FoodItem.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice VND</td>
+                    <td>@(item.Quantity* item.UnitPrice) VND</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="summary-row">
+                <td colspan="3" class="summary-label">Tổng tiền ban đầu:</td>
+                <td class="summary-value">@Model.OriginalAmount VND</td>
+            </tr>
+            <tr class="summary-row">
+                <td colspan="3" class="summary-label">Mã giảm giá:</td>
+                <td class="summary-value">@Model.DiscountCode  Không có</td>
+            </tr>
+            <tr class="summary-row">
+                <td colspan="3" class="summary-label">Số tiền giảm:</td>
+                <td class="summary-value">-@Model.DiscountAmount VND</td>
+            </tr>
+            <tr class="summary-row">
+                <td colspan="3" class="summary-label">Tổng cộng sau giảm:</td>
+                <td class="summary-value">@Model.TotalAmount VND</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

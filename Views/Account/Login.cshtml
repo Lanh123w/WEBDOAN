@@ -1,0 +1,78 @@
+﻿@using WebApplication3.Controllers
+@model LoginViewModel
+@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="lead text-light">Đăng nhập</h2>
+
+<form asp-action="Login" method="post">
+    <div>
+        <label class="lead text-light">Email</label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+    <div>
+        <label class="lead text-light">Mật khẩu</label>
+        <input asp-for="Password" type="password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+
+    <div>
+        <input asp-for="RememberMe" type="checkbox" />
+        <label asp-for="RememberMe">Ghi nhớ đăng nhập</label>
+    </div>
+    <button type="submit">Đăng nhập</button>
+</form>
+
+<form id="googleLoginForm" asp-controller="Account" asp-action="ExternalLogin" method="post">
+    <input type="hidden" name="provider" value="Google" />
+    <input type="hidden" name="returnUrl" value="/Home/Index" />
+    <button type="submit" class="btn btn-google">
+        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" class="google-icon" />
+        Đăng nhập bằng Google
+    </button>
+</form>
+
+
+
+<div>
+    <a asp-action="Register">Chưa có tài khoản? Đăng ký</a>
+</div>
+
+<style>
+    .btn-google {
+        background: linear-gradient(to right, #4285F4, #34A853);
+        color: white !important;
+        border: none;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 16px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        text-decoration: none;
+    }
+
+        .btn-google:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+
+    .google-icon {
+        width: 20px;
+        height: 20px;
+    }
+</style>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
