@@ -47,7 +47,11 @@ public class AccountController : Controller
         ModelState.AddModelError("", "Sai thông tin đăng nhập");
         return View(model);
     }
-
+[HttpGet]
+public IActionResult Register()
+{
+    return View();
+}
     [HttpPost]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
