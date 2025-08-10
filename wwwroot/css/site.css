@@ -127,6 +127,25 @@
         transform: translate(2px, -2px);
     }
 }
+@media (max-width: 768px) {
+    .banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .banner-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .banner-content p {
+        font-size: 1rem;
+    }
+}
 
 /* 🍽️ Cards & Buttons */
 .card.cosmic-item {
