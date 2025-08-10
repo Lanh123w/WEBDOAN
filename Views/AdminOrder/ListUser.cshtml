@@ -1,0 +1,74 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    var onlineUsers = ViewBag.OnlineUsers as Dictionary<string, DateTime>;
+    var activityLogs = ViewBag.ActivityLogs as List<WEBDOAN.Models.ActivityLogViewModel>;
+}
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<h2>📋 Danh sách người dùng</h2>
+
+<table class="table table-bordered table-hover" style="background-color: #fff;">
+    <thead style="background-color: #cce5ff; color: #004085;">
+        <tr>
+            <th>Email</th>
+            <th>Tên đăng nhập</th>
+            <th>Khoá</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            var isOnline = onlineUsers != null &&
+            onlineUsers.ContainsKey(user.Id) &&
+            onlineUsers[user.Id] >= DateTime.UtcNow.AddMinutes(-5);
+
+            <tr style="background-color: #fefefe;">
+                <td>@user.Email</td>
+                <td>@user.UserName</td>
+                <td>
+                    @(user.LockoutEnd != null && user.LockoutEnd > DateTimeOffset.UtcNow ? "🔒 Đang bị khoá" : "🔓 Mở")
+                </td>
+                <td>
+                    @(isOnline ? "🟢 Online" : "⚪ Offline")
+                </td>
+                <td class="d-flex justify-content-between align-items-center mt-4 p-3 rounded" style="background-color: #e2f0d9;">
+                    <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info btn-sm">Chi tiết</a>
+                    <form asp-action="Delete" asp-route-id="@user.Id" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-danger btn-sm">Xoá</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<h2>🧑‍💻 Lịch sử hoạt động</h2>
+
+<table class="table table-striped" style="background-color: #fff;">
+    <thead style="background-color: #cce5ff; color: #004085;">
+        <tr>
+            <th>Tên người dùng</th>
+            <th>Thời gian đăng nhập</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in activityLogs)
+        {
+            <tr>
+                <td>@log.UserName</td>
+                <td>@log.LastLoginTime?.ToString("dd/MM/yyyy HH:mm")</td>
+    
+            </tr>
+        }
+    </tbody>
+</table>
+

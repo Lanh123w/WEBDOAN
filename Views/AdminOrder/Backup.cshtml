@@ -1,0 +1,45 @@
+﻿@model List<WEBDOAN.Models.BackupRecord>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Quản lý Backup";
+}
+
+<h2>💾 Quản lý Backup</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tên file</th>
+            <th>Ngày tạo</th>
+            <th>Đã khôi phục</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var backup in Model)
+        {
+            <tr>
+                <td>@backup.FileName</td>
+                <td>@backup.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@(backup.IsRestored ? "✅" : "❌")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<h3>Tạo bản backup mới</h3>
+<form method="post" asp-action="CreateBackup">
+    <div class="mb-2">
+        <input type="text" name="FileName" placeholder="Tên file backup" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Tạo backup</button>
+</form>
+@foreach (var backup in Model)
+{
+    <div class="row mt-2">
+        <div class="col-md-6">@backup.FileName (@backup.CreatedAt.ToString("dd/MM/yyyy HH:mm"))</div>
+        <div class="col-md-6">
+            <form method="post" asp-action="DeleteBackup" style="display:inline;">
+                <input type="hidden" name="Id" value="@backup.Id" />
+                <button type="submit" class="btn btn-danger">Xoá</button>
+            </form>
+        </div>
+    </div>
+}

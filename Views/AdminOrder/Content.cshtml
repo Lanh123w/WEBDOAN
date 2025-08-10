@@ -1,0 +1,46 @@
+﻿@model List<WEBDOAN.Models.ContentItem>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Quản lý nội dung";
+}
+<h2>📝 Quản lý nội dung</h2>
+
+<form method="post" asp-action="AddContent">
+    <div class="mb-2">
+        <input type="text" name="Title" placeholder="Tiêu đề" class="form-control" required />
+    </div>
+    <div class="mb-2">
+        <input type="text" name="Type" placeholder="Loại (Post/Product/Service)" class="form-control" required />
+    </div>
+    <div class="mb-2">
+        <input type="text" name="Tags" placeholder="Tags" class="form-control" />
+    </div>
+    <div class="mb-2">
+        <textarea name="Description" placeholder="Mô tả" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Thêm nội dung</button>
+</form>
+
+<hr />
+
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>Tiêu đề</th>
+            <th>Loại</th>
+            <th>Tags</th>
+            <th>Ngày tạo</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Type</td>
+                <td>@item.Tags</td>
+                <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

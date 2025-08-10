@@ -1,0 +1,60 @@
+﻿@model List<WEBDOAN.Models.SiteSetting>
+
+@functions {
+    string Get(string key, string fallback = "") =>
+        Model?.FirstOrDefault(s => s.Key == key)?.Value ?? fallback;
+}
+
+@{
+    var hotline = Get("Hotline", "Chưa có số");
+    var facebook = Get("FacebookUrl", "#");
+    var instagram = Get("InstagramUrl", "#");
+
+    var companyName = Get("CompanyName", "Tên công ty chưa có");
+    var foundedYear = Get("FoundedYear", "Năm chưa rõ");
+    var mission = Get("Mission", "Chưa có sứ mệnh");
+    var address = Get("Address", "Chưa có địa chỉ");
+    var email = Get("Email", "Chưa có email");
+    var workingHours = Get("WorkingHours", "Chưa có giờ làm việc");
+    var footerText = Get("FooterText", "Đặt Là Có Ăn là Ghiền");
+    var footerCopyright = Get("FooterCopyright", "© 2025 – Đặt Là Có Ăn là Ghiền");
+    var footerNote = Get("FooterNote", "");
+}
+
+<div class="company-footer text-light py-4 bg-dark">
+    <div class="container">
+        <div class="row text-center text-md-start">
+            <!-- Cột 1: Giới thiệu -->
+            <div class="col-md-4 d-flex flex-column mb-3">
+                <p><i class="fas fa-building me-2"></i><strong>@companyName</strong> (Thành lập: @foundedYear)</p>
+                <p><i class="fas fa-bullseye me-2"></i>Sứ mệnh: @mission</p>
+            </div>
+
+            <!-- Cột 2: Địa chỉ & Email -->
+            <div class="col-md-4 d-flex flex-column mb-3">
+                <p><i class="fas fa-map-marker-alt me-2"></i>Địa chỉ: @address</p>
+                <p><i class="fas fa-envelope me-2"></i>Email: <a href="mailto:@email" class="text-light text-decoration-underline">@email</a></p>
+            </div>
+
+            <!-- Cột 3: Giờ làm việc & Liên hệ -->
+            <div class="col-md-4 d-flex flex-column mb-3">
+                <p><i class="fas fa-clock me-2"></i>Giờ làm việc: @workingHours</p>
+                <p><i class="fas fa-phone-alt me-2"></i><strong>Hotline:</strong> @hotline</p>
+                <p>
+                    <i class="fab fa-facebook me-2"></i><a href="@facebook" target="_blank" class="text-light text-decoration-underline">Facebook</a><br />
+                    <i class="fab fa-instagram me-2"></i><a href="@instagram" target="_blank" class="text-light text-decoration-underline">Instagram</a>
+                </p>
+            </div>
+        </div>
+
+        <hr class="bg-light" />
+        <div class="text-center mt-3">
+            <p>@footerText</p>
+            <p>@footerCopyright</p>
+            @if (!string.IsNullOrWhiteSpace(footerNote))
+            {
+                <p><em>@footerNote</em></p>
+            }
+        </div>
+    </div>
+</div>

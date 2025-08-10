@@ -1,0 +1,154 @@
+﻿@using WEBDOAN.Models
+@model List<SiteSetting>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Cài đặt hệ thống";
+    var message = TempData["Message"] as string;
+    var error = TempData["Error"] as string;
+
+    string GetSetting(string key) => Model.FirstOrDefault(s => s.Key == key)?.Value ?? "";
+}
+
+<h2>⚙️ Cài đặt hệ thống</h2>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-success">@message</div>
+}
+@if (!string.IsNullOrEmpty(error))
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Khoá</th>
+            <th>Giá trị</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var setting in Model)
+        {
+            <tr>
+                <form method="post" asp-action="UpdateSetting">
+                <td>
+                    <input type="hidden" name="id" value="@setting.Id" />
+                    <input type="text" name="key" value="@setting.Key" class="form-control" required />
+                </td>
+                <td>
+                    <input type="text" name="value" value="@setting.Value" class="form-control" required />
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-sm btn-success">Lưu</button>
+                </td>
+                </form>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4 class="mt-4">➕ Thêm thiết lập mới</h4>
+<form method="post" asp-action="CreateSetting" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="Key" placeholder="Khoá" class="form-control" required />
+    </div>
+    <div class="col-md-6">
+        <input type="text" name="Value" placeholder="Giá trị" class="form-control" required />
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">Thêm mới</button>
+    </div>
+</form>
+
+<h4 class="mt-4">🖼️ Upload logo</h4>
+<form method="post" asp-action="UploadLogo" enctype="multipart/form-data" class="row g-2 mb-3">
+    <div class="col-md-6">
+        <input type="file" name="logoFile" class="form-control" accept="image/*" required />
+    </div>
+    <div class="col-md-6">
+        <button type="submit" class="btn btn-warning">Tải lên & lưu vào SiteSettings</button>
+    </div>
+</form>
+
+<h4>📝 Chỉnh sửa nội dung banner</h4>
+<form method="post" asp-action="UpdateBanner" class="row g-3 mb-4">
+    <div class="col-md-6">
+        <label class="form-label">Tiêu đề banner</label>
+        <input type="text" name="BannerTitle" class="form-control" value="@GetSetting("BannerTitle")" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Phụ đề banner</label>
+        <input type="text" name="BannerSubtitle" class="form-control" value="@GetSetting("BannerSubtitle")" />
+    </div>
+    <div class="col-12 text-end">
+        <button type="submit" class="btn btn-success">Lưu nội dung</button>
+    </div>
+</form>
+
+<h4>📱 Chỉnh sửa thông tin liên hệ</h4>
+<form method="post" asp-action="UpdateContact" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label">Hotline</label>
+        <input type="text" name="Hotline" class="form-control" value="@GetSetting("Hotline")" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Facebook</label>
+        <input type="text" name="FacebookUrl" class="form-control" value="@GetSetting("FacebookUrl")" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Instagram</label>
+        <input type="text" name="InstagramUrl" class="form-control" value="@GetSetting("InstagramUrl")" />
+    </div>
+    <div class="col-12 text-end">
+        <button type="submit" class="btn btn-info">Lưu thông tin liên hệ</button>
+    </div>
+</form>
+<h4>🏢 Chỉnh sửa thông tin công ty</h4>
+<form method="post" asp-action="UpdateCompanyInfo" class="row g-3 mb-4">
+    <div class="col-md-6">
+        <label class="form-label">Tên công ty</label>
+        <input type="text" name="CompanyName" class="form-control" value="@GetSetting("CompanyName")" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Năm thành lập</label>
+        <input type="text" name="FoundedYear" class="form-control" value="@GetSetting("FoundedYear")" />
+    </div>
+    <div class="col-md-12">
+        <label class="form-label">Sứ mệnh</label>
+        <input type="text" name="Mission" class="form-control" value="@GetSetting("Mission")" />
+    </div>
+    <div class="col-md-12">
+        <label class="form-label">Địa chỉ</label>
+        <input type="text" name="Address" class="form-control" value="@GetSetting("Address")" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input type="email" name="Email" class="form-control" value="@GetSetting("Email")" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Giờ làm việc</label>
+        <input type="text" name="WorkingHours" class="form-control" value="@GetSetting("WorkingHours")" />
+    </div>
+    <div class="col-12 text-end">
+        <button type="submit" class="btn btn-secondary">Lưu thông tin công ty</button>
+    </div>
+</form>
+<h4>Chỉnh sửa Footer</h4>
+<form asp-action="UpdateFooter" method="post">
+    <div class="form-group">
+        <label for="FooterText">Nội dung chính</label>
+        <input type="text" name="FooterText" class="form-control" value="@GetSetting("FooterText")" />
+    </div>
+    <div class="form-group">
+        <label for="FooterCopyright">Bản quyền</label>
+        <input type="text" name="FooterCopyright" class="form-control" value="@GetSetting("FooterCopyright")" />
+    </div>
+    <div class="form-group">
+        <label for="FooterNote">Ghi chú</label>
+        <input type="text" name="FooterNote" class="form-control" value="@GetSetting("FooterNote")" />
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Cập nhật Footer</button>
+</form>

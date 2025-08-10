@@ -1,0 +1,24 @@
+﻿@model List<WEBDOAN.Models.ActivityLogViewModel>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Lịch sử đăng nhập";
+}
+<h2>🧑‍💻 Lịch sử đăng nhập</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Tên người dùng</th>
+            <th>Thời gian đăng nhập</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model)
+        {
+            <tr>
+                <td>@log.UserName</td>
+                <td>@log.LastLoginTime?.ToString("dd/MM/yyyy HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>

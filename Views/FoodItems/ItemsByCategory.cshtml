@@ -1,0 +1,78 @@
+﻿@using WEBDOAN.Models
+
+@model Category
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
+<h2 class="section-title">🧆 Món ăn thuộc danh mục: @Model.Name</h2>
+
+<div class="row">
+    @foreach (var item in Model.FoodItems)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 food-card">
+                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" />
+                <div class="card-body text-center">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text">@item.Description</p>
+                    <p class="card-text text-success fw-bold">@item.Price</p>
+                    <img id="food-img-@item.Id" src="@item.ImageUrl" class="img-thumbnail" />
+
+                    <form method="post" asp-controller="Cart" asp-action="AddToCart" onsubmit="playTing()">
+                        <input type="hidden" name="foodItemId" value="@item.Id" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button onclick="flyToCart('#food-img-@item.Id', '.nav-link[href*=Cart]')">🛒 Thêm vào giỏ</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- 🎵 Âm thanh ting -->
+<audio id="ting-audio" src="~/audio/ting.mp3" preload="auto"></audio>
+
+<!-- 🎨 Hiệu ứng CSS -->
+<style>
+    .food-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .food-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
+    .card-img-top {
+        object-fit: cover;
+        height: 200px;
+    }
+
+    .btn-success {
+        background-color: #198754;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-success:hover {
+            background-color: #157347;
+        }
+</style>
+
+<!-- 🔊 JavaScript phát âm thanh -->
+<script>
+    function playTing() {
+        const audio = document.getElementById("ting-audio");
+        if (audio) {
+            audio.play();
+        }
+    }
+</script>

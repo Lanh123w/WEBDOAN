@@ -1,0 +1,17 @@
+﻿@using WEBDOAN.Models
+@model FoodItem
+
+@{
+    ViewData["Title"] = "Xóa món ăn";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h3 class="mb-4">❗ Bạn có chắc muốn xóa món <strong>"@Model.Name"</strong>?</h3>
+
+<form asp-controller="AdminOrder" asp-action="DeleteFood" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-danger">🗑️ Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">↩️ Hủy</a>
+</form>

@@ -1,0 +1,292 @@
+﻿:root {
+    --primary-blue: #0d6efd;
+    --blue-hover: #0b5ed7;
+    --light-blue-bg: #f0f8ff;
+    --white: #ffffff;
+    --text-dark: #212529;
+    --card-shadow: rgba(13, 110, 253, 0.2);
+    --card-hover-shadow: rgba(13, 110, 253, 0.3);
+    --card-hover-end: #007bff;
+    --text-color: #333;
+    --shadow-color: rgba(0, 123, 255, 0.2);
+    --shadow-hover: rgba(0, 123, 255, 0.3);
+}
+
+/* 🌌 Cosmic Background */
+#cosmic-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #3c3f6e, #1f1f3a);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.nebula {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, var(--nebula-color), transparent 70%);
+    filter: blur(100px);
+    animation: floatNebula 30s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .nebula {
+        width: 250px;
+        height: 250px;
+        filter: blur(70px);
+    }
+}
+
+/* 🌐 Navbar */
+.navbar.bg-dark {
+    background-color: rgba(15,15,15,0.95) !important;
+    box-shadow: 0 0 20px rgba(0,255,200,0.4);
+}
+
+.navbar {
+    font-size: 18px;
+    white-space: nowrap;
+    position: relative;
+    z-index: 1050;
+}
+
+    .navbar .nav-link {
+        color: rgba(0,255,255,0.6) !important;
+        font-weight: bold;
+        text-shadow: 0 0 4px rgba(0,255,255,0.3);
+        transition: color 0.3s ease;
+    }
+
+        .navbar .nav-link:hover {
+            color: #80ffea !important;
+            transform: scale(1.1);
+        }
+
+/* ✨ Glitch + Scroll Title */
+.glitch-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: visible;
+    position: relative;
+    color: #00ffff;
+    animation: scrollText 12s linear infinite;
+    text-shadow: 0 0 6px rgba(0,255,255,0.6), 0 0 20px rgba(0,255,200,0.5);
+    display: inline-block;
+    max-width: 100%;
+}
+
+    .glitch-title::before,
+    .glitch-title::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        animation: glitchWave 2.5s infinite linear alternate-reverse;
+        opacity: 0.6;
+    }
+
+    .glitch-title::before {
+        left: 2px;
+        color: #00ffe0;
+        clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%);
+    }
+
+    .glitch-title::after {
+        left: -2px;
+        color: #00f0ff;
+        clip-path: polygon(0 75%, 100% 75%, 100% 100%, 0 100%);
+    }
+
+@keyframes scrollText {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes glitchWave {
+    0% {
+        transform: translate(0);
+    }
+
+    100% {
+        transform: translate(2px, -2px);
+    }
+}
+
+/* 🍽️ Cards & Buttons */
+.card.cosmic-item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+    .card.cosmic-item:hover {
+        transform: scale(1.08);
+        box-shadow: 0 0 25px rgba(0,255,255,0.5), 0 0 45px rgba(255,150,255,0.3);
+        filter: brightness(1.15);
+        z-index: 5;
+    }
+
+@media (max-width: 768px) {
+    .card.cosmic-item:hover {
+        transform: scale(1.03);
+    }
+}
+
+.btn-danger {
+    background-color: #ff4d4d;
+    border: 2px solid #ff9999;
+    box-shadow: 0 0 10px rgba(255,0,0,0.4);
+    transition: all 0.3s ease;
+}
+
+    .btn-danger:hover {
+        background-color: #ff6666;
+        box-shadow: 0 0 15px rgba(255,0,0,0.6);
+        transform: scale(1.05);
+    }
+
+.btn-order {
+    background-color: #00cc99;
+    color: #000;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 2px solid #00ffcc;
+    box-shadow: 0 0 10px #00ffcc;
+    transition: all 0.3s ease;
+}
+
+    .btn-order:hover {
+        background-color: #00ffcc;
+        box-shadow: 0 0 15px #00ffcc;
+        transform: scale(1.05);
+    }
+
+/* 🧾 Form & Labels */
+label {
+    color: #0df8cd;
+}
+
+    label[for="Phone"] {
+        color: #009688;
+    }
+
+select {
+    color: #ed1515;
+    background-color: #007bff;
+    font-weight: bold;
+}
+
+/* 🎁 Discount Box */
+.discount-code {
+    background-color: #222;
+    color: #00ffcc;
+    border: 2px dashed #00ffcc;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0,255,200,0.3);
+    cursor: pointer;
+}
+
+    .discount-code:hover {
+        background-color: #00ffcc;
+        color: #000;
+        transform: scale(1.05) rotate(-1deg);
+        box-shadow: 0 0 20px rgba(0,255,200,0.6);
+    }
+
+/* 📊 Table Styling */
+.food-table {
+    background-color: #fdfdfd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .food-table thead th {
+        background-color: #343a40;
+        color: #fff;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-bottom: 2px solid #444;
+    }
+
+    .food-table tbody tr {
+        background-color: #ffffff;
+        transition: background-color 0.3s ease;
+    }
+
+        .food-table tbody tr:hover {
+            background-color: #e6f7ff;
+        }
+
+    .food-table td {
+        padding: 12px;
+        vertical-align: middle;
+    }
+
+.img-thumbnail {
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    background-color: #f8f9fa;
+}
+
+.user-stats {
+    font-size: 14px;
+    color: #f8f9fa;
+}
+
+    .user-stats strong {
+        color: #ffc107;
+    }
+
+    .user-stats .text-success {
+        color: #28a745;
+    }
+
+/* 🎞️ Animations */
+@keyframes floatNebula {
+    0% {
+        transform: translate(0px, 0px) scale(1);
+    }
+
+    100% {
+        transform: translate(80px, 50px) scale(1.1);
+    }
+}
+/* 🔘 Google Button */
+.btn-google {
+    background: linear-gradient(to right, #4285F4, #34A853);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-weight: 500;
+    font-size: 16px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .btn-google:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0,0,

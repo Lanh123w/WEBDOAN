@@ -1,0 +1,112 @@
+﻿@using WEBDOAN.Models
+
+@model Order
+
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #121212;
+        color: #00ffe7;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    h2 {
+        color: #00ffcc;
+        text-shadow: 0 0 8px #00ffcc;
+    }
+
+    p {
+        font-size: 18px;
+        color: #ffffff;
+        text-shadow: 0 0 3px #00ffe7;
+    }
+
+    strong {
+        color: #00ffff;
+        text-shadow: 0 0 4px #00ffff;
+    }
+
+    .table {
+        background-color: #1a1a1a;
+        border: 2px solid #00ffcc;
+        color: #ffffff;
+        box-shadow: 0 0 10px #00ffcc;
+    }
+
+        .table th {
+            background-color: #003333;
+            color: #00ffcc;
+            text-shadow: 0 0 3px #00ffcc;
+        }
+
+        .table td {
+            background-color: #002222;
+            color: #ffffff;
+            border: 1px solid #00ffcc;
+        }
+
+    .btn-primary {
+        background-color: #00cc99;
+        border-color: #00cc99;
+        color: #000;
+        font-weight: bold;
+        box-shadow: 0 0 5px #00cc99;
+    }
+
+        .btn-primary:hover {
+            background-color: #00ffcc;
+            border-color: #00ffcc;
+            color: #000;
+        }
+</style>
+
+<div class="container mt-5 text-center">
+    <h2>🎉 Đặt hàng thành công!</h2>
+    <p>Cảm ơn bạn đã đặt hàng.</p>
+    <p><strong>Mã đơn hàng:</strong> @Model.Id</p>
+    <p><strong>Khách hàng:</strong> @Model.CustomerName</p>
+    <p><strong>Địa chỉ:</strong> @Model.Address</p>
+    <p><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>Món ăn</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderDetails)
+            {
+                <tr>
+                    <td>@item.FoodItem.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice VND</td>
+                    <td>@(item.Quantity* item.UnitPrice) VND</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-end fw-bold">Mã giảm giá:</td>
+                <td class="text-info fw-bold">@Model.DiscountCode Không có</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-end fw-bold">Số tiền giảm:</td>
+                <td class="text-success fw-bold">-@Model.DiscountAmount VND</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-end fw-bold">Tổng cộng sau giảm:</td>
+                <td class="text-danger fw-bold">@Model.TotalAmount VND</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <a asp-action="Index" class="btn btn-primary mt-3">🔙 Quay lại giỏ hàng</a>
+</div>

@@ -1,0 +1,34 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityUser
+@{
+    var roles = ViewBag.Roles as IList<string>;
+}
+@{
+    ViewData["Title"] = "Chi tiết người dùng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="d-flex justify-content-between align-items-center mt-4 p-3 rounded" style="background-color: #e2f0d9,color aqua;">🔍 Chi tiết người dùng</h2>
+
+<table class="table d-flex justify-content-between align-items-center mt-4 p-3 rounded" style="background-color: #e2f0d9;">>
+    <tr><th>Email</th><td>@Model.Email</td></tr>
+    <tr><th>Tên đăng nhập</th><td>@Model.UserName</td></tr>
+    <tr><th>Khoá</th><td>@(Model.LockoutEnd != null && Model.LockoutEnd > DateTimeOffset.UtcNow ? "🔒 Đang bị khoá" : "🔓 Mở")</td></tr>
+    <tr><th>Vai trò</th><td>@string.Join(", ", roles)</td></tr>
+</table>
+
+<h4 class="d-flex justify-content-between align-items-center mt-4 p-3 rounded" style="background-color: #e2f0d9, color aqua">Thao tác</h4>
+
+<form asp-action="AssignRole" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <select name="role" class="form-select">
+        <option value="Admin">Admin</option>
+        <option value="User">User</option>
+    </select>
+    <button type="submit" class="btn btn-primary mt-2">Gán vai trò</button>
+</form>
+
+<form asp-action="ToggleLock" asp-route-id="@Model.Id" method="post" class="mt-3">
+    <button type="submit" class="btn btn-warning">
+        @(Model.LockoutEnd != null && Model.LockoutEnd > DateTimeOffset.UtcNow ? "🔓 Mở khoá" : "🔒 Khoá tài khoản")
+    </button>
+</form>

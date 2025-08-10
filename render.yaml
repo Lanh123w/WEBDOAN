@@ -1,0 +1,26 @@
+﻿services:
+  - type: web
+    name: WEBDOAN
+    runtime: docker
+    repo: https://github.com/Lanh123w/WEBDOAN
+    branch: main
+    plan: starter
+    autoDeploy: true
+
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+
+      - key: PORT
+        value: 10000
+
+      # 🔐 Google OAuth
+      - key: Authentication__Google__ClientId
+        value: 895957029830-ge5upghlqeqs55jpgpp47napoh19odq6.apps.googleusercontent.com
+
+      - key: Authentication__Google__ClientSecret
+        value: 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
+
+      # 🛡️ Enable forwarded headers
+      - key: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+        value: true
