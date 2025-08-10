@@ -17,39 +17,21 @@
 }
 
 <div class="container mt-5">
-    @model List<SiteSetting>
+  @{
 
-    @functions {
-        string Get(string key, string fallback = "") =>
-        Model?.FirstOrDefault(s => s.Key == key)?.Value ?? fallback;
-    }
+    var logoUrl = Get("LogoUrl", "/images/default-logo.png");
+    var bannerTitle = Get("BannerTitle", "Tiêu đề mặc định");
+    var bannerSubtitle = Get("BannerSubtitle", "Phụ đề mặc định");
+}
 
-    @{
-        var logoUrl = Get("LogoUrl");
-        var siteName = Get("SiteName", "Đặt Là Có Ăn là Ghiền");
-        var bannerTitle = Get("BannerTitle", "Thế giới ẩm thực trong tầm tay bạn");
-        var bannerSubtitle = Get("BannerSubtitle", "Đặt là có ăn, ăn là ghiền!");
-
-        var hotline = Get("Hotline", "Chưa có số");
-        var facebook = Get("FacebookUrl", "#");
-        var instagram = Get("InstagramUrl", "#");
-    }
-    <!-- 🌟 Banner chào mừng -->
-    <div class="banner-container container py-4">
-        <div class="d-flex align-items-center justify-content-center flex-wrap gap-4">
-            @if (!string.IsNullOrWhiteSpace(logoUrl))
-            {
-                <img src="@logoUrl" alt="@siteName" class="logo-img" />
-            }
-
-            <div class="text-light text-center text-md-start">
-                <h1 class="fw-bold mb-2">@bannerTitle</h1>
-                <p class="lead mb-2">@bannerSubtitle</p>
-
-            
-            </div>
-        </div>
+<!-- Banner section -->
+<div class="banner d-flex align-items-center">
+    <img src="@logoUrl" class="logo me-3" alt="Logo" />
+    <div class="banner-content">
+        <h1>@bannerTitle</h1>
+        <p>@bannerSubtitle</p>
     </div>
+</div>
 
 
 
@@ -298,15 +280,26 @@
         animation: pulseGlow 3s infinite;
     }
 
-    .banner-container {
-        background-color: #222;
-        border-top: 1px solid #444;
-        border-bottom: 1px solid #444;
-    }
+  .banner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
 
-    .logo-img {
-        height: 60px;
-        max-width: 100px;
-        object-fit: contain;
-    }
+.banner .logo {
+    max-height: 80px;
+    margin-right: 20px;
+}
+
+.banner-content {
+    flex-grow: 1;
+}
+.logo {
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05) rotate(-2deg);
+}
+
 </style>
