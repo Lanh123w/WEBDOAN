@@ -262,6 +262,20 @@ public class AdminOrderController : Controller
         return View(stats);
     }
 
+public async Task<IActionResult> ToggleStatus(int id)
+{
+    var food = await _context.FoodItems.FindAsync(id);
+    if (food == null)
+    {
+        return NotFound();
+    }
+
+    food.IsActive = !food.IsActive;
+    await _context.SaveChangesAsync();
+
+    TempData["SuccessMessage"] = food.IsActive ? "Món ăn đã được mở lại." : "Món ăn đã bị khóa.";
+    return RedirectToAction("Index");
+}
 
     [HttpGet]
     public async Task<IActionResult> ActivityLogs()
