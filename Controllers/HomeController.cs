@@ -69,6 +69,12 @@ namespace WebApplication3.Controllers
             var ip = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
          ?? HttpContext.Connection.RemoteIpAddress?.ToString()
          ?? "Unknown";
+            _context.VisitLogs.Add(new VisitLog
+{
+    VisitDate = DateTime.UtcNow,
+    VisitorIP = ip
+});
+await _context.SaveChangesAsync();
 
             var today = DateTime.UtcNow.Date;
             // 📊 Thống kê lượt truy cập
