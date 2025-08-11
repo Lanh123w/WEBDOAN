@@ -803,7 +803,7 @@ public async Task<IActionResult> ToggleStatus(int id)
         TempData["Success"] = "✅ Mã giảm giá đã được thêm!";
         return RedirectToAction("DiscountCodes");
     }
-   public async Task<IActionResult> Monan()
+ public async Task<IActionResult> Monan()
 {
     var items = await _context.FoodItems
         .Include(f => f.Category)
@@ -816,9 +816,18 @@ public async Task<IActionResult> ToggleStatus(int id)
             ImageUrl = f.ImageUrl,
             Category = f.Category,
             TotalQuantity = f.TotalQuantity,
+
+            // Tính QuantitySold từ OrderDetails
             QuantitySold = _context.OrderDetails
                 .Where(o => o.FoodItemId == f.Id)
-                .Sum(o => (int?)o.Quantity) ?? 0
+                .Sum(o => (int?)o.Quantity) ?? 0,
+
+            // Tính IsActive dựa trên số lượng còn lại
+            IsActive = (f.TotalQuantity - (
+                _context.OrderDetails
+                    .Where(o => o.FoodItemId == f.Id)
+                    .Sum(o => (int?)o.Quantity) ?? 0
+            )) > 0
         })
         .ToListAsync();
 
