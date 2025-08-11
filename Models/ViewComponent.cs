@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using WEBDOAN.Models;
-using WEBDOAN.Models;
 using WEBDOAN.Data;
+using WEBDOAN.Models;
 
 namespace WEBDOAN.ViewComponents
 {
@@ -22,6 +21,7 @@ namespace WEBDOAN.ViewComponents
             _context = context;
         }
 
+        // 👥 ViewModel nội bộ dùng cho thống kê người dùng và lượt truy cập
         public class UserStatsViewModel
         {
             public int TotalUsers { get; set; }
