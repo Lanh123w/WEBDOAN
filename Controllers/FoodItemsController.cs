@@ -210,14 +210,32 @@ namespace WebApplication3.Controllers
 
             return View(category);
         }
-        public async Task<IActionResult> AllItems()
+     public async Task<IActionResult> AllItems()
+{
+    var allItems = await _context.FoodItems
+        .Include(f => f.Category)
+        .Select(f => new FoodItem
         {
-            var allItems = await _context.FoodItems
-                .Include(f => f.Category)
-                .ToListAsync();
+            Id = f.Id,
+            Name = f.Name,
+            Price = f.Price,
+            Description = f.Description,
+            ImageUrl = f.ImageUrl,
+            Category = f.Category,
+            TotalQuantity = f.TotalQuantity,
+            QuantitySold = _context.OrderDetails
+                .Where(o => o.FoodItemId == f.Id)
+                .Sum(o => (int?)o.Quantity) ?? 0
+        })
+        .ToListAsync();
 
-            return View(allItems);
-        }
+    // Tính số lượng còn lại và lọc món còn hàng
+    var filteredItems = allItems
+        .Where(f => (f.TotalQuantity - f.QuantitySold) > 0)
+        .ToList();
+
+    return View(filteredItems);
+}
 
     }
 }
