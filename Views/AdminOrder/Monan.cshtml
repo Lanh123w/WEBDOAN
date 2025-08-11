@@ -1,135 +1,137 @@
-﻿@model IEnumerable<WEBDOAN.Models.FoodItem>
+@model IEnumerable<WEBDOAN.Models.FoodItem>
 
-    @{
-        ViewData["Title"] = "Danh sách món ăn";
-        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+@{
+    ViewData["Title"] = "Danh sách món ăn";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-
-    <h2>Danh sách món ăn</h2>
+<h2>Danh sách món ăn</h2>
 
 @if (TempData["SuccessMessage"] != null)
 {
-        <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
+    <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
 }
 
-    <a asp-action="Create" class="btn btn-primary mb-3">➕ Thêm món</a>
+<a asp-action="Create" class="btn btn-primary mb-3">➕ Thêm món</a>
 
-    <table class="table table-bordered table-food">
-
-        <thead>
+<table class="table table-bordered table-food">
+    <thead>
+        <tr>
+            <th>Ảnh</th>
+            <th>Tên</th>
+            <th>Giá</th>
+            <th>Mô tả</th>
+            <th>Tổng SL</th>
+            <th>Đã bán</th>
+            <th>Còn lại</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var remaining = item.TotalQuantity - item.QuantitySold;
             <tr>
-                <th>Ảnh</th>
-                <th>Tên</th>
-                <th>Giá</th>
-                <th>Mô tả</th>
-                <th>Hành động</th>
+                <td><img src="@item.ImageUrl" style="height:80px;" /></td>
+                <td>@item.Name</td>
+                <td>@item.Price.ToString("N0") đ</td>
+                <td>@item.Description</td>
+                <td>@item.TotalQuantity</td>
+                <td>@item.QuantitySold</td>
+                <td class="@(remaining < 5 ? "text-danger fw-bold" : "")">@remaining</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">✏️</a>
+                    <a asp-action="DeleteFood" asp-route-id="@item.Id" class="btn btn-danger btn-sm">🗑️</a>
+                    @if (item.IsActive)
+                    {
+                        <a asp-action="ToggleStatus" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">🔒 Khóa</a>
+                    }
+                    else
+                    {
+                        <span class="text-danger fw-bold">⛔ Đã khóa</span>
+                        <a asp-action="ToggleStatus" asp-route-id="@item.Id" class="btn btn-success btn-sm">🔓 Mở</a>
+                    }
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td><img src="@item.ImageUrl" style="height:80px;" /></td>
-                    <td>@item.Name</td>
-                    <td>@item.Price.ToString("N0") đ</td>
-                    <td>@item.Description</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">✏️</a>
-                        <a asp-action="DeleteFood" asp-route-id="@item.Id" class="btn btn-danger btn-sm">🗑️</a>
- @if (item.IsActive)
-    {
-        <a asp-action="ToggleStatus" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">🔒 Khóa</a>
+        }
+    </tbody>
+</table>
+
+<style>
+    .table-food {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        font-family: 'Quicksand', sans-serif;
     }
-    else
-    {
-        <span class="text-danger fw-bold">⛔ Đã khóa</span>
-        <a asp-action="ToggleStatus" asp-route-id="@item.Id" class="btn btn-success btn-sm">🔓 Mở</a>
+
+    .table-food th {
+        background-color: #0d6efd;
+        color: white;
+        text-align: center;
+        font-weight: 700;
+        padding: 12px;
+        font-size: 16px;
     }
-                    </td>
-                
 
-                </tr>
-            }
-        </tbody>
-    </table>
+    .table-food td {
+        text-align: center;
+        vertical-align: middle;
+        background-color: #f1f3f5;
+        padding: 10px;
+        font-size: 15px;
+        color: #333;
+    }
 
-    <style>
-        .table-food {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            background-color: #ffffff;
-            font-family: 'Quicksand', sans-serif;
-        }
+    .table-food tr:hover td {
+        background-color: #dbeafe;
+        transition: background-color 0.3s ease;
+    }
 
-            .table-food th {
-                background-color: #0d6efd;
-                color: white;
-                text-align: center;
-                font-weight: 700;
-                padding: 12px;
-                font-size: 16px;
-            }
+    .table-food img {
+        border-radius: 8px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
 
-            .table-food td {
-                text-align: center;
-                vertical-align: middle;
-                background-color: #f1f3f5;
-                padding: 10px;
-                font-size: 15px;
-                color: #333;
-            }
+    .btn-warning {
+        background-color: #fd7e14;
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
 
-            .table-food tr:hover td {
-                background-color: #dbeafe;
-                transition: background-color 0.3s ease;
-            }
+    .btn-warning:hover {
+        background-color: #e96c0a;
+    }
 
-            .table-food img {
-                border-radius: 8px;
-                box-shadow: 0 0 5px rgba(0,0,0,0.1);
-            }
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
 
-        .btn-warning {
-            background-color: #fd7e14;
-            border: none;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
 
-            .btn-warning:hover {
-                background-color: #e96c0a;
-            }
+    .btn-primary {
+        background-color: #0d6efd;
+        border: none;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
 
-        .btn-danger {
-            background-color: #dc3545;
-            border: none;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-
-            .btn-danger:hover {
-                background-color: #c82333;
-            }
-
-        .btn-primary {
-            background-color: #0d6efd;
-            border: none;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-
-            .btn-primary:hover {
-                background-color: #0b5ed7;
-            }
-
-    </style>
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+    }
+</style>
