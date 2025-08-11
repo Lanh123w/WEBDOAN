@@ -27,6 +27,8 @@ namespace WEBDOAN.Models
 
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
+        public bool IsActive { get; set; } = true;
+
 
         [NotMapped] 
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
