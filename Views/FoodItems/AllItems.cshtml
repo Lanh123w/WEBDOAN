@@ -11,24 +11,43 @@
 <div class="row">
     @foreach (var item in Model)
     {
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 food-card">
-                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" />
-                <div class="card-body text-center">
-                    <h5 class="card-title">@item.Name</h5>
-                    <p class="card-text">@item.Description</p>
-                    <p class="card-text text-danger fw-bold">@item.Price ₫</p>
-                    <form method="post" asp-controller="Cart" asp-action="AddToCart" onsubmit="playTing()">
-                        <input type="hidden" name="foodItemId" value="@item.Id" />
-                        <input type="hidden" name="quantity" value="1" />
-                        <button type="submit" class="btn btn-success">Thêm vào giỏ hàng</button>
-                    </form>
-                   
+        if (item.IsActive)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 food-card">
+                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" />
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">@item.Description</p>
+                        <p class="card-text text-danger fw-bold">@item.Price ₫</p>
+                        <form method="post" asp-controller="Cart" asp-action="AddToCart" onsubmit="playTing()">
+                            <input type="hidden" name="foodItemId" value="@item.Id" />
+                            <input type="hidden" name="quantity" value="1" />
+                            <button type="submit" class="btn btn-success">Thêm vào giỏ hàng</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 food-card opacity-75">
+                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" />
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">@item.Name</h5>
+                        <p class="card-text text-muted">@item.Description</p>
+                        <p class="card-text text-muted">@item.Price ₫</p>
+                        <div class="alert alert-warning text-center">
+                            ⛔ Món ăn này hiện đang tạm hết. Vui lòng chọn món khác nhé!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     }
 </div>
+
 <style>
     .food-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
