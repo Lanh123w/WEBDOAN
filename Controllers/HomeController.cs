@@ -75,7 +75,8 @@ namespace WebApplication3.Controllers
             ViewBag.TodayVisitCount = _context.VisitLogs.Count(v => v.VisitDate == today);
             ViewBag.TotalVisitCount = _context.VisitLogs.Count();
 
-            return View();
+           return View(settings); // Truyền danh sách SiteSettings vào View
+
         }
         public IActionResult Admin()
         {
