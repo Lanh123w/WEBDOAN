@@ -1,6 +1,6 @@
 @using WEBDOAN.Models
-
 @model List<FoodItem>
+
 @{
     ViewData["Title"] = "Tất cả món ăn";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,6 +18,11 @@
                 <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" />
                 <div class="card-body text-center">
                     <h5 class="card-title @(remaining == 0 || !item.IsActive ? "text-muted" : "")">@item.Name</h5>
+
+                    <p class="badge @(remaining > 0 ? "bg-success" : "bg-secondary")">
+                        @(remaining > 0 ? $"✅ Còn {remaining} phần" : "⛔ Hết hàng")
+                    </p>
+
                     <p class="card-text @(remaining == 0 || !item.IsActive ? "text-muted" : "")">@item.Description</p>
                     <p class="card-text @(remaining == 0 || !item.IsActive ? "text-muted" : "text-danger fw-bold")">@item.Price ₫</p>
 
@@ -76,5 +81,13 @@
     .alert-warning {
         font-size: 14px;
         padding: 8px;
+    }
+
+    .badge {
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 12px;
+        margin-bottom: 8px;
+        display: inline-block;
     }
 </style>
