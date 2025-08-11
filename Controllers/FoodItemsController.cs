@@ -198,18 +198,44 @@ namespace WebApplication3.Controllers
             return View(categories);
         }
 
-        // Hiển thị món ăn theo danh mục
-        public async Task<IActionResult> ItemsByCategory(int id)
+       public async Task<IActionResult> ItemsByCategory(int id)
+{
+    var category = await _context.Categories
+        .FirstOrDefaultAsync(c => c.Id == id);
+
+    if (category == null)
+        return NotFound();
+
+    // Lấy món ăn thuộc danh mục đó
+    var foodItems = await _context.FoodItems
+        .Where(f => f.CategoryId == id)
+        .Include(f => f.Category)
+        .Select(f => new FoodItem
         {
-            var category = await _context.Categories
-                .Include(c => c.FoodItems)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            Id = f.Id,
+            Name = f.Name,
+            Price = f.Price,
+            Description = f.Description,
+            ImageUrl = f.ImageUrl,
+            Category = f.Category,
+            TotalQuantity = f.TotalQuantity,
+            QuantitySold = _context.OrderDetails
+                .Where(o => o.FoodItemId == f.Id)
+                .Sum(o => (int?)o.Quantity) ?? 0
+        })
+        .ToListAsync();
 
-            if (category == null)
-                return NotFound();
+    // Lọc món còn hàng
+    var filteredItems = foodItems
+        .Where(f => (f.TotalQuantity - f.QuantitySold) > 0)
+        .ToList();
 
-            return View(category);
-        }
+    // Gán lại vào category
+    category.FoodItems = filteredItems;
+
+    return View(category);
+}
+
      public async Task<IActionResult> AllItems()
 {
     var allItems = await _context.FoodItems
