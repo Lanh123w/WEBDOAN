@@ -8,8 +8,8 @@
 <button onclick="getCurrentLocation()">📍 Lấy vị trí hiện tại</button>
 <br /><br />
 
-<input type="text" id="storeLocation" placeholder="Nhập địa chỉ cửa hàng..." style="width: 300px;" />
-<button onclick="geocodeAddress()">🔍 Tìm & Vẽ đường</button>
+<input type="text" id="storeLocation" placeholder="Nhập địa chỉ cửa hàng..." style="width: 300px;" oninput="suggestAddress()" />
+<ul id="suggestions" style="list-style: none; padding-left: 0; margin-top: 5px;"></ul>
 
 <div id="routeInfo" style="margin-top: 10px; font-weight: bold;"></div>
 
@@ -32,6 +32,17 @@
     }
     button:hover {
         background-color: #218838;
+    }
+    #suggestions li {
+        background-color: #f8f9fa;
+        padding: 6px 10px;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        margin-bottom: 2px;
+        border-radius: 4px;
+    }
+    #suggestions li:hover {
+        background-color: #e2e6ea;
     }
 </style>
 
@@ -74,30 +85,46 @@
         }
     }
 
-    function geocodeAddress() {
-        const address = document.getElementById("storeLocation").value;
+    function suggestAddress() {
+        const query = document.getElementById("storeLocation").value;
+        if (query.length < 3) {
+            document.getElementById("suggestions").innerHTML = "";
+            return;
+        }
+
+        fetch(`https://api.openrouteservice.org/geocode/search?api_key=${apiKey}&text=${encodeURIComponent(query)}&size=5&boundary.country=VN`)
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById("suggestions");
+                list.innerHTML = "";
+
+                data.features.forEach((feature) => {
+                    const li = document.createElement("li");
+                    li.textContent = feature.properties.label;
+                    li.onclick = () => selectAddress(feature);
+                    list.appendChild(li);
+                });
+            })
+            .catch(err => {
+                console.error("Lỗi gợi ý địa chỉ:", err);
+            });
+    }
+
+    function selectAddress(feature) {
+        const coords = feature.geometry.coordinates;
+        const storeLocation = [coords[1], coords[0]];
+
+        map.setView(storeLocation, 15);
+        marker.setLatLng(storeLocation);
+        document.getElementById("storeLocation").value = feature.properties.label;
+        document.getElementById("suggestions").innerHTML = "";
+
         if (!currentLocation) {
             alert("⚠️ Vui lòng lấy vị trí hiện tại trước.");
             return;
         }
 
-        fetch(`https://api.openrouteservice.org/geocode/search?api_key=${apiKey}&text=${encodeURIComponent(address)}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.features.length > 0) {
-                    const coords = data.features[0].geometry.coordinates;
-                    const storeLocation = [coords[1], coords[0]];
-                    map.setView(storeLocation, 15);
-                    marker.setLatLng(storeLocation);
-
-                    drawRoute(currentLocation, storeLocation);
-                } else {
-                    alert("❌ Không tìm thấy địa chỉ.");
-                }
-            })
-            .catch(err => {
-                alert("⚠️ Lỗi khi gọi API: " + err);
-            });
+        drawRoute(currentLocation, storeLocation);
     }
 
     function drawRoute(start, end) {
