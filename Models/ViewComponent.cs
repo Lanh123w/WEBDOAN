@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WEBDOAN.Models;
-using WEBDOAN.Data;
 using WEBDOAN.Models;
+using WEBDOAN.Data;
 
 namespace WEBDOAN.ViewComponents
 {
