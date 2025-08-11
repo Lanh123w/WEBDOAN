@@ -803,10 +803,27 @@ public async Task<IActionResult> ToggleStatus(int id)
         TempData["Success"] = "✅ Mã giảm giá đã được thêm!";
         return RedirectToAction("DiscountCodes");
     }
-    public async Task<IActionResult> Monan()
-    {
-        var items = await _context.FoodItems.Include(f => f.Category).ToListAsync();
-        return View(items);
-    }
+   public async Task<IActionResult> Monan()
+{
+    var items = await _context.FoodItems
+        .Include(f => f.Category)
+        .Select(f => new FoodItem
+        {
+            Id = f.Id,
+            Name = f.Name,
+            Price = f.Price,
+            Description = f.Description,
+            ImageUrl = f.ImageUrl,
+            Category = f.Category,
+            TotalQuantity = f.TotalQuantity,
+            QuantitySold = _context.OrderDetails
+                .Where(o => o.FoodItemId == f.Id)
+                .Sum(o => (int?)o.Quantity) ?? 0
+        })
+        .ToListAsync();
+
+    return View(items);
+}
+
 }
 
