@@ -1,16 +1,17 @@
-﻿@{
+@{
     ViewData["Title"] = "Chọn vị trí cửa hàng";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>🗺️ Bản đồ chọn vị trí cửa hàng </h2>
+<h2>🗺️ Bản đồ chọn vị trí cửa hàng (Leaflet + OpenRouteService)</h2>
 
 <button onclick="getCurrentLocation()">📍 Lấy vị trí hiện tại</button>
-<br />
-<br />
+<br /><br />
 
 <input type="text" id="storeLocation" placeholder="Nhập địa chỉ cửa hàng..." style="width: 300px;" />
-<button onclick="geocodeAddress()">🔍 Tìm</button>
+<button onclick="geocodeAddress()">🔍 Tìm & Vẽ đường</button>
+
+<div id="routeInfo" style="margin-top: 10px; font-weight: bold;"></div>
 
 <style>
     #map {
@@ -18,91 +19,53 @@
         width: 100%;
         border: 2px solid #ccc;
         border-radius: 8px;
+        margin-top: 20px;
     }
     button {
         margin-right: 10px;
         padding: 8px 16px;
-        background-color: #007bff;
+        background-color: #28a745;
         color: white;
         border: none;
         border-radius: 4px;
         cursor: pointer;
     }
     button:hover {
-        background-color: #0056b3;
-        }
+        background-color: #218838;
+    }
 </style>
-<div id="map" style="height: 500px; margin-top: 20px;"></div>
 
+<div id="map"></div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUqHa5xcgyDBd9xSgf71sQpTAMXYBiPtQ&callback=initMap&libraries=places"
-        async defer></script>
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-    let map;
-    let marker;
-    let geocoder;
+    let map, marker, currentLocation, routeLine, deliveryZone;
+    const apiKey = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImYxZDJjYTMzYmJhNjQ5NGI5MDY0ZjVhOTE3ZjcyZWE2IiwiaCI6Im11cm11cjY0In0=";
 
-    function initMap() {
-        const defaultLocation = { lat: 10.762622, lng: 106.660172 }; // TP.HCM
+    const defaultLocation = [10.762622, 106.660172]; // TP.HCM
 
-        const vintageStyle = [
-            { elementType: "geometry", stylers: [{ color: "#ebe3cd" }] },
-            { elementType: "labels.text.fill", stylers: [{ color: "#523735" }] },
-            { elementType: "labels.text.stroke", stylers: [{ color: "#f5f1e6" }] },
-            {
-                featureType: "administrative",
-                elementType: "geometry.stroke",
-                stylers: [{ color: "#c9b2a6" }]
-            },
-            {
-                featureType: "poi",
-                elementType: "geometry",
-                stylers: [{ color: "#dfd2ae" }]
-            },
-            {
-                featureType: "road",
-                elementType: "geometry",
-                stylers: [{ color: "#f5f1e6" }]
-            },
-            {
-                featureType: "water",
-                elementType: "geometry.fill",
-                stylers: [{ color: "#b9d3c2" }]
-            }
-        ];
+    map = L.map('map').setView(defaultLocation, 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
 
-        map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 13,
-            center: defaultLocation,
-            styles: vintageStyle,
-        });
+    marker = L.marker(defaultLocation, { draggable: true }).addTo(map)
+        .bindPopup("📌 Vị trí cửa hàng").openPopup();
 
-        geocoder = new google.maps.Geocoder();
-
-        marker = new google.maps.Marker({
-            position: defaultLocation,
-            map: map,
-            draggable: true,
-            title: "📌 Vị trí cửa hàng",
-        });
-
-        marker.addListener("dragend", function () {
-            const pos = marker.getPosition();
-            alert("📌 Vị trí đã chọn:\nLat: " + pos.lat() + "\nLng: " + pos.lng());
-        });
-    }
+    marker.on('dragend', function (e) {
+        const pos = marker.getLatLng();
+        alert(`📌 Vị trí đã chọn:\nLat: ${pos.lat}\nLng: ${pos.lng}`);
+    });
 
     function getCurrentLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
-                const pos = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                };
-                map.setCenter(pos);
-                marker.setPosition(pos);
-                alert("📍 Vị trí hiện tại:\nLat: " + pos.lat + "\nLng: " + pos.lng);
+                currentLocation = [position.coords.latitude, position.coords.longitude];
+                map.setView(currentLocation, 15);
+                L.marker(currentLocation).addTo(map).bindPopup("📍 Vị trí hiện tại").openPopup();
             }, function () {
                 alert("❌ Không thể lấy vị trí hiện tại.");
             });
@@ -113,13 +76,103 @@
 
     function geocodeAddress() {
         const address = document.getElementById("storeLocation").value;
-        geocoder.geocode({ address: address }, function (results, status) {
-            if (status === "OK") {
-                map.setCenter(results[0].geometry.location);
-                marker.setPosition(results[0].geometry.location);
-            } else {
-                alert("❌ Không tìm thấy địa chỉ: " + status);
+        if (!currentLocation) {
+            alert("⚠️ Vui lòng lấy vị trí hiện tại trước.");
+            return;
+        }
+
+        fetch(`https://api.openrouteservice.org/geocode/search?api_key=${apiKey}&text=${encodeURIComponent(address)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.features.length > 0) {
+                    const coords = data.features[0].geometry.coordinates;
+                    const storeLocation = [coords[1], coords[0]];
+                    map.setView(storeLocation, 15);
+                    marker.setLatLng(storeLocation);
+
+                    drawRoute(currentLocation, storeLocation);
+                } else {
+                    alert("❌ Không tìm thấy địa chỉ.");
+                }
+            })
+            .catch(err => {
+                alert("⚠️ Lỗi khi gọi API: " + err);
+            });
+    }
+
+    function drawRoute(start, end) {
+        const body = {
+            coordinates: [
+                [start[1], start[0]], // [lng, lat]
+                [end[1], end[0]]
+            ]
+        };
+
+        fetch("https://api.openrouteservice.org/v2/directions/driving-car", {
+            method: "POST",
+            headers: {
+                "Authorization": apiKey,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+        .then(res => res.json())
+        .then(data => {
+            const coords = data.features[0].geometry.coordinates.map(c => [c[1], c[0]]); // [lat, lng]
+
+            if (routeLine) {
+                map.removeLayer(routeLine);
             }
+
+            routeLine = L.polyline(coords, { color: 'blue', weight: 5 }).addTo(map);
+            map.fitBounds(routeLine.getBounds());
+
+            // Hiển thị thông tin tuyến đường
+            const distance = data.features[0].properties.summary.distance / 1000; // km
+            const duration = data.features[0].properties.summary.duration / 60; // phút
+
+            document.getElementById("routeInfo").innerText =
+                `🚗 Quãng đường: ${distance.toFixed(2)} km | ⏱️ Thời gian: ${duration.toFixed(1)} phút`;
+
+            // Vẽ vùng giao hàng
+            drawDeliveryZone(end);
+        })
+        .catch(err => {
+            alert("❌ Lỗi khi vẽ tuyến đường: " + err);
+        });
+    }
+
+    function drawDeliveryZone(center) {
+        const body = {
+            locations: [[center[1], center[0]]], // [lng, lat]
+            range: [900], // 15 phút = 900 giây
+            units: "m"
+        };
+
+        fetch("https://api.openrouteservice.org/v2/isochrones", {
+            method: "POST",
+            headers: {
+                "Authorization": apiKey,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+        .then(res => res.json())
+        .then(data => {
+            const polygon = data.features[0].geometry.coordinates[0].map(c => [c[1], c[0]]); // [lat, lng]
+
+            if (deliveryZone) {
+                map.removeLayer(deliveryZone);
+            }
+
+            deliveryZone = L.polygon(polygon, {
+                color: 'green',
+                fillColor: '#90ee90',
+                fillOpacity: 0.4
+            }).addTo(map).bindPopup("📦 Vùng giao hàng trong 15 phút").openPopup();
+        })
+        .catch(err => {
+            alert("❌ Lỗi khi vẽ vùng giao hàng: " + err);
         });
     }
 </script>
