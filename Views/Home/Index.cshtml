@@ -17,7 +17,8 @@
 }
 
 <div class="container mt-5">
-  @{
+  @model List<SiteSetting> 
+@{
 
     var logoUrl = Get("LogoUrl", "/images/default-logo.png");
     var bannerTitle = Get("BannerTitle", "Tiêu đề mặc định");
