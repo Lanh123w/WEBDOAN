@@ -48,7 +48,7 @@
                 </td>
                 <td>@item.QuantitySold</td>
                 <td class="@(remaining == 0 ? "text-danger fw-bold bg-warning" : remaining < 5 ? "text-danger fw-bold" : "")">
-                    @remaining
+                    🍽️ @remaining
                     @if (remaining == 0)
                     {
                         <div class="text-danger small">⛔ Hết hàng</div>
@@ -67,6 +67,7 @@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">✏️</a>
                     <a asp-action="DeleteFood" asp-route-id="@item.Id" class="btn btn-danger btn-sm">🗑️</a>
+
                     @if (item.IsActive)
                     {
                         @if (remaining > 0)
@@ -80,7 +81,14 @@
                     }
                     else
                     {
-                        <a asp-action="ToggleStatus" asp-route-id="@item.Id" class="btn btn-success btn-sm">🔓 Mở</a>
+                        @if (remaining > 0)
+                        {
+                            <a asp-action="ToggleStatus" asp-route-id="@item.Id" class="btn btn-success btn-sm">🔓 Mở</a>
+                        }
+                        else
+                        {
+                            <span class="text-warning small">⚠️ Hết hàng</span>
+                        }
                     }
                 </td>
             </tr>
@@ -166,13 +174,7 @@
         background-color: #0b5ed7;
     }
 
-    .btn-success {
-        padding: 4px 8px;
-        font-size: 14px;
-        border-radius: 6px;
-    }
-
-    .btn-secondary {
+    .btn-success, .btn-secondary {
         padding: 4px 8px;
         font-size: 14px;
         border-radius: 6px;
