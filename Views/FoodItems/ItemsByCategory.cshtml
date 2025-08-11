@@ -1,5 +1,4 @@
 @using WEBDOAN.Models
-
 @model Category
 
 @if (TempData["Message"] != null)
@@ -21,8 +20,14 @@
                 <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" />
                 <div class="card-body text-center">
                     <h5 class="card-title @(remaining == 0 || !item.IsActive ? "text-muted" : "")">@item.Name</h5>
+
+                    <p class="badge @(remaining > 0 ? "bg-success" : "bg-secondary")">
+                        @(remaining > 0 ? $"✅ Còn {remaining} phần" : "⛔ Hết hàng")
+                    </p>
+
                     <p class="card-text @(remaining == 0 || !item.IsActive ? "text-muted" : "")">@item.Description</p>
                     <p class="card-text @(remaining == 0 || !item.IsActive ? "text-muted" : "text-success fw-bold")">@item.Price ₫</p>
+
                     <img id="food-img-@item.Id" src="@item.ImageUrl" class="img-thumbnail" />
 
                     @if (item.IsActive && remaining > 0)
@@ -84,6 +89,14 @@
     .alert-warning {
         font-size: 14px;
         padding: 8px;
+    }
+
+    .badge {
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 12px;
+        margin-bottom: 8px;
+        display: inline-block;
     }
 </style>
 
