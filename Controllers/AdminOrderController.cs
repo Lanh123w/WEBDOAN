@@ -825,5 +825,19 @@ public async Task<IActionResult> ToggleStatus(int id)
     return View(items);
 }
 
+[HttpPost]
+public async Task<IActionResult> UpdateQuantity(int Id, int TotalQuantity)
+{
+    var food = await _context.FoodItems.FindAsync(Id);
+    if (food != null)
+    {
+        food.TotalQuantity = TotalQuantity;
+        _context.Update(food);
+        await _context.SaveChangesAsync();
+        TempData["SuccessMessage"] = "Cập nhật số lượng thành công!";
+    }
+    return RedirectToAction("Monan");
+}
+
 }
 
