@@ -29,6 +29,10 @@ namespace WEBDOAN.Models
         public Category Category { get; set; }
         public bool IsActive { get; set; } = true;
 
+        public int TotalQuantity { get; set; } // Tổng số lượng món ăn
+        public int QuantitySold { get; set; }  // Số lượng đã bán
+        public int RemainingQuantity => TotalQuantity - QuantitySold; // Số lượng còn lại
+
 
         [NotMapped] 
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
