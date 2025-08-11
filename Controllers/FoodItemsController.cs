@@ -198,7 +198,7 @@ namespace WebApplication3.Controllers
             return View(categories);
         }
 
-      public async Task<IActionResult> ItemsByCategory(int id)
+ public async Task<IActionResult> ItemsByCategory(int id)
 {
     var category = await _context.Categories
         .FirstOrDefaultAsync(c => c.Id == id);
@@ -225,16 +225,11 @@ namespace WebApplication3.Controllers
         })
         .ToListAsync();
 
-    // Tính số lượng còn lại
-    foreach (var item in foodItems)
-    {
-        item.RemainingQuantity = item.TotalQuantity - item.QuantitySold;
-    }
-
     category.FoodItems = foodItems;
 
     return View(category);
 }
+
 
      public async Task<IActionResult> AllItems()
 {
