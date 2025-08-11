@@ -1,4 +1,4 @@
-﻿@model List<WEBDOAN.Models.SiteSetting>
+@model List<WEBDOAN.Models.SiteSetting>
 
 @functions {
     string Get(string key, string fallback = "") =>
@@ -6,6 +6,9 @@
 }
 
 @{
+    var bannerTitle = Get("BannerTitle", "Tiêu đề mặc định");
+    var bannerSubtitle = Get("BannerSubtitle", "Phụ đề mặc định");
+
     var hotline = Get("Hotline", "Chưa có số");
     var facebook = Get("FacebookUrl", "#");
     var instagram = Get("InstagramUrl", "#");
@@ -23,20 +26,36 @@
 
 <div class="company-footer text-light py-4 bg-dark">
     <div class="container">
+        <!-- Banner hiển thị -->
+        <div class="text-center mb-4">
+            <h2>@bannerTitle</h2>
+            <p class="lead">@bannerSubtitle</p>
+        </div>
+
+        <!-- Form chỉnh sửa banner -->
+        <form asp-action="UpdateBanner" method="post" class="mb-5 bg-secondary p-3 rounded">
+            <h5 class="text-light">Chỉnh sửa nội dung banner</h5>
+            <div class="mb-3">
+                <label class="form-label text-light">Tiêu đề</label>
+                <input type="text" name="BannerTitle" value="@bannerTitle" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-light">Phụ đề</label>
+                <input type="text" name="BannerSubtitle" value="@bannerSubtitle" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-warning">Cập nhật</button>
+        </form>
+
+        <!-- Footer thông tin -->
         <div class="row text-center text-md-start">
-            <!-- Cột 1: Giới thiệu -->
             <div class="col-md-4 d-flex flex-column mb-3">
                 <p><i class="fas fa-building me-2"></i><strong>@companyName</strong> (Thành lập: @foundedYear)</p>
                 <p><i class="fas fa-bullseye me-2"></i>Sứ mệnh: @mission</p>
             </div>
-
-            <!-- Cột 2: Địa chỉ & Email -->
             <div class="col-md-4 d-flex flex-column mb-3">
                 <p><i class="fas fa-map-marker-alt me-2"></i>Địa chỉ: @address</p>
                 <p><i class="fas fa-envelope me-2"></i>Email: <a href="mailto:@email" class="text-light text-decoration-underline">@email</a></p>
             </div>
-
-            <!-- Cột 3: Giờ làm việc & Liên hệ -->
             <div class="col-md-4 d-flex flex-column mb-3">
                 <p><i class="fas fa-clock me-2"></i>Giờ làm việc: @workingHours</p>
                 <p><i class="fas fa-phone-alt me-2"></i><strong>Hotline:</strong> @hotline</p>
