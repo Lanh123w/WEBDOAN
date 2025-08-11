@@ -3,12 +3,12 @@
 
 @if (TempData["Message"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success text-center">
         @TempData["Message"]
     </div>
 }
 
-<h2 class="section-title">🧆 Món ăn thuộc danh mục: @Model.Name</h2>
+<h2 class="section-title text-center mb-4">🧆 Món ăn thuộc danh mục: <strong>@Model.Name</strong></h2>
 
 <div class="row">
     @foreach (var item in Model.FoodItems)
@@ -18,17 +18,18 @@
         <div class="col-md-4 mb-4">
             <div class="card h-100 food-card @(remaining == 0 || !item.IsActive ? "opacity-75" : "")">
                 <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" />
+
                 <div class="card-body text-center">
                     <h5 class="card-title @(remaining == 0 || !item.IsActive ? "text-muted" : "")">@item.Name</h5>
 
-                    <p class="badge @(remaining > 0 ? "bg-success" : "bg-secondary")">
-                        @(remaining > 0 ? $"✅ Còn {remaining} phần" : "⛔ Hết hàng")
-                    </p>
+                    <span class="badge @(remaining > 0 ? "bg-success" : "bg-secondary") mb-2">
+                        @(remaining > 0 ? $"✅ Còn {remaining} phần" : "⛔ Tạm hết hàng")
+                    </span>
 
                     <p class="card-text @(remaining == 0 || !item.IsActive ? "text-muted" : "")">@item.Description</p>
-                    <p class="card-text @(remaining == 0 || !item.IsActive ? "text-muted" : "text-success fw-bold")">@item.Price ₫</p>
+                    <p class="card-text @(remaining == 0 || !item.IsActive ? "text-muted" : "text-success fw-bold")">@item.Price.ToString("N0") ₫</p>
 
-                    <img id="food-img-@item.Id" src="@item.ImageUrl" class="img-thumbnail" />
+                    <img id="food-img-@item.Id" src="@item.ImageUrl" class="img-thumbnail mb-2" />
 
                     @if (item.IsActive && remaining > 0)
                     {
@@ -95,8 +96,12 @@
         font-size: 14px;
         padding: 6px 12px;
         border-radius: 12px;
-        margin-bottom: 8px;
         display: inline-block;
+    }
+
+    .section-title {
+        font-size: 24px;
+        font-weight: bold;
     }
 </style>
 
