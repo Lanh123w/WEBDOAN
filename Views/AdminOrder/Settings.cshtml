@@ -64,14 +64,6 @@
 </form>
 
 <h4 class="mt-4">🖼️ Upload logo</h4>
-
-<!-- Hiển thị logo hiện tại -->
-<div class="mb-3">
-    <label class="form-label">Logo hiện tại:</label><br />
-    <img src="@Get("LogoUrl", "/images/default-logo.png")" alt="Logo hiện tại" style="height: 80px;" class="border rounded" />
-</div>
-
-<!-- Form upload -->
 <form method="post" asp-action="UploadLogo" enctype="multipart/form-data" class="row g-2 mb-3">
     <div class="col-md-6">
         <input type="file" name="logoFile" class="form-control" accept="image/*" required />
@@ -80,17 +72,6 @@
         <button type="submit" class="btn btn-warning">Tải lên & lưu vào SiteSettings</button>
     </div>
 </form>
-
-<!-- Thông báo kết quả -->
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success">@TempData["Message"]</div>
-}
-else if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
-
 
 <h4>📝 Chỉnh sửa nội dung banner</h4>
 <form method="post" asp-action="UpdateBanner" class="row g-3 mb-4">
