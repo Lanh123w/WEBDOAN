@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Danh sách món ăn</h2>
+<h2>📋 Danh sách món ăn</h2>
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -24,6 +24,7 @@
             <th>Tổng SL</th>
             <th>Đã bán</th>
             <th>Còn lại</th>
+            <th>Trạng thái</th>
             <th>Hành động</th>
         </tr>
     </thead>
@@ -46,17 +47,39 @@
                     </form>
                 </td>
                 <td>@item.QuantitySold</td>
-                <td class="@(remaining < 5 ? "text-danger fw-bold" : "")">@remaining</td>
+                <td class="@(remaining == 0 ? "text-danger fw-bold bg-warning" : remaining < 5 ? "text-danger fw-bold" : "")">
+                    @remaining
+                    @if (remaining == 0)
+                    {
+                        <div class="text-danger small">⛔ Hết hàng</div>
+                    }
+                </td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <span class="text-success fw-bold">✅ Đang bán</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger fw-bold">⛔ Đã khóa</span>
+                    }
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">✏️</a>
                     <a asp-action="DeleteFood" asp-route-id="@item.Id" class="btn btn-danger btn-sm">🗑️</a>
                     @if (item.IsActive)
                     {
-                        <a asp-action="ToggleStatus" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">🔒 Khóa</a>
+                        @if (remaining > 0)
+                        {
+                            <a asp-action="ToggleStatus" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">🔒 Khóa</a>
+                        }
+                        else
+                        {
+                            <span class="text-warning small">⚠️ Hết hàng</span>
+                        }
                     }
                     else
                     {
-                        <span class="text-danger fw-bold">⛔ Đã khóa</span>
                         <a asp-action="ToggleStatus" asp-route-id="@item.Id" class="btn btn-success btn-sm">🔓 Mở</a>
                     }
                 </td>
@@ -144,6 +167,12 @@
     }
 
     .btn-success {
+        padding: 4px 8px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+
+    .btn-secondary {
         padding: 4px 8px;
         font-size: 14px;
         border-radius: 6px;
