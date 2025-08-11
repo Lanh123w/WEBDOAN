@@ -37,7 +37,18 @@
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">✏️</a>
                         <a asp-action="DeleteFood" asp-route-id="@item.Id" class="btn btn-danger btn-sm">🗑️</a>
+ @if (item.IsActive)
+    {
+        <a asp-action="ToggleStatus" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">🔒 Khóa</a>
+    }
+    else
+    {
+        <span class="text-danger fw-bold">⛔ Đã khóa</span>
+        <a asp-action="ToggleStatus" asp-route-id="@item.Id" class="btn btn-success btn-sm">🔓 Mở</a>
+    }
                     </td>
+                
+
                 </tr>
             }
         </tbody>
