@@ -6,8 +6,7 @@
 }
 
 @{
-    var bannerTitle = Get("BannerTitle", "Tiêu đề mặc định");
-    var bannerSubtitle = Get("BannerSubtitle", "Phụ đề mặc định");
+  
 
     var hotline = Get("Hotline", "Chưa có số");
     var facebook = Get("FacebookUrl", "#");
@@ -32,19 +31,7 @@
             <p class="lead">@bannerSubtitle</p>
         </div>
 
-        <!-- Form chỉnh sửa banner -->
-        <form asp-action="UpdateBanner" method="post" class="mb-5 bg-secondary p-3 rounded">
-            <h5 class="text-light">Chỉnh sửa nội dung banner</h5>
-            <div class="mb-3">
-                <label class="form-label text-light">Tiêu đề</label>
-                <input type="text" name="BannerTitle" value="@bannerTitle" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label text-light">Phụ đề</label>
-                <input type="text" name="BannerSubtitle" value="@bannerSubtitle" class="form-control" />
-            </div>
-            <button type="submit" class="btn btn-warning">Cập nhật</button>
-        </form>
+       
 
         <!-- Footer thông tin -->
         <div class="row text-center text-md-start">
