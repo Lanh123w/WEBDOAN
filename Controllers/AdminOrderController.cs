@@ -832,10 +832,24 @@ public async Task<IActionResult> UpdateQuantity(int Id, int TotalQuantity)
     if (food != null)
     {
         food.TotalQuantity = TotalQuantity;
+
+        var remaining = food.TotalQuantity - food.QuantitySold;
+
+        if (remaining <= 0)
+        {
+            food.IsActive = false; 
+        }
+        else
+        {
+            food.IsActive = true; 
+        }
+
         _context.Update(food);
         await _context.SaveChangesAsync();
-        TempData["SuccessMessage"] = "Cập nhật số lượng thành công!";
+
+        TempData["SuccessMessage"] = "✅ Cập nhật số lượng thành công!";
     }
+
     return RedirectToAction("Monan");
 }
 
